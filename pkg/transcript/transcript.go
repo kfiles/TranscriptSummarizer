@@ -81,7 +81,7 @@ func (c *Caption) Download() (*CaptionResponse, error) {
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("Error reading body:", err)
+		return nil, fmt.Errorf("error reading body: %w", err)
 	}
 
 	var t CaptionResponse

@@ -27,7 +27,7 @@ func createHugoIndex(dirPath string) error {
 }
 
 func main() {
-	videos, err := transcript.GetPlaylistItems(playlistId, "")
+	videos, err := transcript.GetPlaylistItems(playlistId)
 	if err != nil {
 		log.Fatal(err)
 	}

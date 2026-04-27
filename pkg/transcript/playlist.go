@@ -74,37 +74,45 @@ func GetPlaylists(channelId string, playlistId string, pageToken string) ([]*Pla
 	return playlists, nil
 }
 
-func GetPlaylistItems(playlistId string, pageToken string) ([]*Video, error) {
+func GetPlaylistItems(playlistId string) ([]*Video, error) {
 	client := getClient(youtube.YoutubeReadonlyScope)
 	ctx := context.Background()
 	service, err := youtube.NewService(ctx, option.WithHTTPClient(client))
 	if err != nil {
 		log.Fatalf("Error creating YouTube client: %v", err)
 	}
-	call := service.PlaylistItems.List([]string{"snippet", "contentDetails"})
-	call = call.PlaylistId(playlistId)
-	call = call.MaxResults(maxPlaylistResults)
-	if pageToken != "" {
-		call.PageToken(pageToken)
-	}
-	response, perr := call.Do()
-	if perr != nil {
-		return nil, fmt.Errorf("error getting playlist items: %v", perr)
-	}
-	videos := make([]*Video, 0, len(response.Items))
-	for _, item := range response.Items {
-		publishedAt, terr := time.Parse("2006-01-02T15:04:05Z", item.Snippet.PublishedAt)
-		if terr != nil {
-			publishedAt = time.Time{}
+
+	var videos []*Video
+	pageToken := ""
+	for {
+		call := service.PlaylistItems.List([]string{"snippet", "contentDetails"})
+		call = call.PlaylistId(playlistId)
+		call = call.MaxResults(maxPlaylistResults)
+		if pageToken != "" {
+			call = call.PageToken(pageToken)
 		}
-		videos = append(videos, &Video{
-			VideoId:     item.Snippet.ResourceId.VideoId,
-			PlaylistId:  item.Snippet.PlaylistId,
-			Title:       item.Snippet.Title,
-			Description: item.Snippet.Description,
-			Position:    item.Snippet.Position,
-			PublishedAt: publishedAt,
-		})
+		response, perr := call.Do()
+		if perr != nil {
+			return nil, fmt.Errorf("error getting playlist items: %v", perr)
+		}
+		for _, item := range response.Items {
+			publishedAt, terr := time.Parse("2006-01-02T15:04:05Z", item.Snippet.PublishedAt)
+			if terr != nil {
+				publishedAt = time.Time{}
+			}
+			videos = append(videos, &Video{
+				VideoId:     item.Snippet.ResourceId.VideoId,
+				PlaylistId:  item.Snippet.PlaylistId,
+				Title:       item.Snippet.Title,
+				Description: item.Snippet.Description,
+				Position:    item.Snippet.Position,
+				PublishedAt: publishedAt,
+			})
+		}
+		if response.NextPageToken == "" {
+			break
+		}
+		pageToken = response.NextPageToken
 	}
 	return videos, nil
 }

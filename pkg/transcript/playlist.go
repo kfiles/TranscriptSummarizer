@@ -5,6 +5,7 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/api/option"
 	"log"
+	"os"
 	"time"
 
 	"google.golang.org/api/youtube/v3"
@@ -72,6 +73,35 @@ func GetPlaylists(channelId string, playlistId string, pageToken string) ([]*Pla
 		})
 	}
 	return playlists, nil
+}
+
+// GetVideoByID fetches metadata for a single video using a YOUTUBE_API_KEY env var.
+// This is the auth-free alternative to GetPlaylistItems for use in serverless contexts.
+func GetVideoByID(videoID string) (*Video, error) {
+	apiKey := os.Getenv("YOUTUBE_API_KEY")
+	if apiKey == "" {
+		return nil, fmt.Errorf("YOUTUBE_API_KEY environment variable not set")
+	}
+	ctx := context.Background()
+	service, err := youtube.NewService(ctx, option.WithAPIKey(apiKey))
+	if err != nil {
+		return nil, fmt.Errorf("error creating YouTube client: %w", err)
+	}
+	response, err := service.Videos.List([]string{"snippet"}).Id(videoID).Do()
+	if err != nil {
+		return nil, fmt.Errorf("error fetching video %s: %w", videoID, err)
+	}
+	if len(response.Items) == 0 {
+		return nil, fmt.Errorf("video %s not found", videoID)
+	}
+	item := response.Items[0]
+	publishedAt, _ := time.Parse("2006-01-02T15:04:05Z", item.Snippet.PublishedAt)
+	return &Video{
+		VideoId:     item.Id,
+		Title:       item.Snippet.Title,
+		Description: item.Snippet.Description,
+		PublishedAt: publishedAt,
+	}, nil
 }
 
 func GetPlaylistItems(playlistId string) ([]*Video, error) {

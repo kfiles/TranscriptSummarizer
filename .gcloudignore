@@ -1,0 +1,25 @@
+# Exclude files that don't need to be uploaded to Cloud Functions.
+# The build happens server-side from go.mod; only Go source is needed.
+
+.gcloudignore
+.git
+.gitignore
+
+# Hugo build output and Firebase cache
+site/public/
+.firebase/
+
+# Local OAuth credentials — never upload these
+client_secret.json
+~/.credentials/
+
+# Test files and coverage artifacts
+*_test.go
+*.out
+coverage.html
+
+# Local binaries
+transcriptsummarizer
+
+# Node artifacts (firebase-tools installed at deploy time)
+node_modules/

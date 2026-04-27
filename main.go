@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/kfiles/transcriptsummarizer/pkg/db"
+	"github.com/kfiles/transcriptsummarizer/pkg/facebook"
 	"github.com/kfiles/transcriptsummarizer/pkg/summarize"
 	"github.com/kfiles/transcriptsummarizer/pkg/transcript"
 	"golang.org/x/net/context"
@@ -104,6 +105,14 @@ func main() {
 			if err != nil {
 				log.Printf("Error writing summary for video %s: %v", v.VideoId, err)
 				continue
+			}
+			fbPageID := os.Getenv("FACEBOOK_PAGE_ID")
+			fbToken := os.Getenv("FACEBOOK_PAGE_TOKEN")
+			if fbPageID != "" && fbToken != "" {
+				post := facebook.FormatPost(v.Title, t.SummaryText)
+				if fberr := facebook.PostToPage(fbPageID, fbToken, post); fberr != nil {
+					log.Printf("Error posting to Facebook for video %s: %v", v.VideoId, fberr)
+				}
 			}
 		}
 	}

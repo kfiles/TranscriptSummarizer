@@ -6,15 +6,10 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/GoogleCloudPlatform/functions-framework-go/functions"
 	"github.com/kfiles/transcriptsummarizer/pkg/db"
 	"github.com/kfiles/transcriptsummarizer/pkg/pipeline"
 	"github.com/kfiles/transcriptsummarizer/pkg/transcript"
 )
-
-func init() {
-	functions.HTTP("YouTubeWebhook", handler)
-}
 
 // atomFeed is the subset of the YouTube PubSubHubbub Atom payload we care about.
 // YouTube sends: <feed xmlns:yt="http://www.youtube.com/xml/schemas/2015" ...>
@@ -29,7 +24,9 @@ type atomFeed struct {
 	} `xml:"entry"`
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
+// Handler is the HTTP handler for YouTube PubSubHubbub notifications.
+// Exported so the root package can expose it as the Cloud Functions entry point.
+func Handler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		// YouTube subscription verification: echo hub.challenge back verbatim.
@@ -54,7 +51,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 		// Process synchronously — the function timeout (set to 540s) gives us plenty
 		// of headroom. Returning an error causes YouTube to retry, which is desirable.
-		if err := runPipeline(r.Context(), videoID); err != nil {
+		if err := runPipelineFn(r.Context(), videoID); err != nil {
 			log.Printf("webhook: pipeline error for %s: %v", videoID, err)
 			http.Error(w, "internal error", http.StatusInternalServerError)
 			return
@@ -65,6 +62,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 	}
 }
+
+var runPipelineFn = runPipeline
 
 func runPipeline(ctx context.Context, videoID string) error {
 	video, err := transcript.GetVideoByID(videoID)

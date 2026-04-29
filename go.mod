@@ -4,7 +4,7 @@ go 1.25.0
 
 require (
 	github.com/gomarkdown/markdown v0.0.0-20250311123330-531bef5e742b
-	github.com/sashabaranov/go-openai v1.38.2
+	github.com/sashabaranov/go-openai v1.41.2
 	go.mongodb.org/mongo-driver/v2 v2.2.0
 	golang.org/x/net v0.52.0
 	golang.org/x/oauth2 v0.36.0

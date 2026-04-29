@@ -19,7 +19,7 @@ func Summarize(ctx context.Context, text string) (string, error) {
 	resp, err := client.CreateChatCompletion(
 		ctx,
 		openai.ChatCompletionRequest{
-			Model: openai.GPT4oMini,
+			Model: "gpt-4.1-mini",
 			Messages: []openai.ChatCompletionMessage{
 				{
 					Role:    openai.ChatMessageRoleSystem,
@@ -27,7 +27,7 @@ func Summarize(ctx context.Context, text string) (string, error) {
 				},
 				{
 					Role:    openai.ChatMessageRoleUser,
-					Content: "Summarize the transcript of the meeting below. Include information about attendance, what topics were discussed, what motions were made, and whether they passed. Generate in valid Markdown format. Ensure that the following names are spelled correctly: John Keohane, Erin Bradley, Richard Wells, Benjamin Zoll, Roxanne Musto",
+					Content: "Summarize the transcript of the meeting below. The title of the minutes must include the phrase \"Unofficial Minutes\". Include information about attendance, what topics were discussed, what motions were made, and whether they passed. Generate in valid Markdown format. Ensure that the following names are spelled correctly: John Keohane, Erin Bradley, Richard Wells, Benjamin Zoll, Roxanne Musto",
 				},
 				{
 					Role:    openai.ChatMessageRoleUser,

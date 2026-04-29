@@ -22,6 +22,11 @@ import (
 const defaultHugoContentDir = "site/content/minutes"
 const indexName = "_index.md"
 
+var (
+	listCaptions = transcript.ListVideoCaptions
+	doSummarize  = summarize.Summarize
+)
+
 // Run processes a single video: stores metadata in MongoDB, extracts and summarizes the
 // transcript, writes Hugo markdown, and optionally uploads to GCS and triggers Cloud Build.
 //
@@ -46,15 +51,18 @@ func Run(ctx context.Context, facade db.Facade, client *mongo.Client, v *transcr
 		}
 	}
 
-	captions, err := transcript.ListVideoCaptions(v.VideoId)
+	captions, err := listCaptions(v.VideoId)
 	if err != nil {
 		return fmt.Errorf("fetch captions for %s: %w", v.VideoId, err)
 	}
 
-	for _, c := range captions {
-		if err := processCaption(ctx, facade, client, v, c, hugoContentDir); err != nil {
-			log.Printf("caption %s for video %s: %v", c.LanguageCode, v.VideoId, err)
-		}
+	if len(captions) == 0 {
+		return fmt.Errorf("no caption tracks found for video %s", v.VideoId)
+	}
+
+	first := captions[0]
+	if err := processCaption(ctx, facade, client, v, first, hugoContentDir); err != nil {
+		log.Printf("caption %s for video %s: %v", first.LanguageCode, v.VideoId, err)
 	}
 	return nil
 }
@@ -71,7 +79,7 @@ func processCaption(ctx context.Context, facade db.Facade, client *mongo.Client,
 		if err = facade.InsertTranscript(ctx, client, newT); err != nil {
 			return fmt.Errorf("insert transcript: %w", err)
 		}
-		summary, serr := summarize.Summarize(ctx, newT.RetrievedText)
+		summary, serr := doSummarize(ctx, newT.RetrievedText)
 		if serr != nil {
 			return fmt.Errorf("summarize: %w", serr)
 		}
@@ -97,7 +105,7 @@ func processCaption(ctx context.Context, facade db.Facade, client *mongo.Client,
 
 	fbPageID := os.Getenv("FACEBOOK_PAGE_ID")
 	fbToken := os.Getenv("FACEBOOK_PAGE_TOKEN")
-	if fbPageID != "" && fbToken != "" {
+	if os.Getenv("FACEBOOK_ENABLED") != "false" && fbPageID != "" && fbToken != "" {
 		post := facebook.FormatPost(v.Title, t.SummaryText)
 		if err := facebook.PostToPage(fbPageID, fbToken, post); err != nil {
 			log.Printf("Facebook post for %s: %v", v.VideoId, err)

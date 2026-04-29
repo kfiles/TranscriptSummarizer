@@ -14,6 +14,8 @@ func (f *dbFacade) ListVideos(ctx context.Context, dbClient *mongo.Client, playl
 }
 
 func (f *dbFacade) GetVideo(ctx context.Context, dbClient *mongo.Client, videoID string) (*transcript.Video, error) {
+	ctx, cancel := capCtx(ctx)
+	defer cancel()
 	res := dbClient.Database(databaseName).Collection(collectionVideos).FindOne(ctx, bson.D{{"_id", videoID}})
 	if res.Err() == mongo.ErrNoDocuments {
 		return nil, res.Err()
@@ -27,11 +29,10 @@ func (f *dbFacade) GetVideo(ctx context.Context, dbClient *mongo.Client, videoID
 }
 
 func (f *dbFacade) InsertVideo(ctx context.Context, dbClient *mongo.Client, video *transcript.Video) error {
+	ctx, cancel := capCtx(ctx)
+	defer cancel()
 	_, err := dbClient.Database(databaseName).Collection(collectionVideos).InsertOne(ctx, video)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func (f *dbFacade) UpdateVideo(ctx context.Context, dbClient *mongo.Client, video *transcript.Video) error {

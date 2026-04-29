@@ -14,6 +14,8 @@ func (f *dbFacade) ListTranscripts(ctx context.Context, dbClient *mongo.Client, 
 }
 
 func (f *dbFacade) GetTranscript(ctx context.Context, dbClient *mongo.Client, videoID string, languageCode string) (*transcript.Transcript, error) {
+	ctx, cancel := capCtx(ctx)
+	defer cancel()
 	res := dbClient.Database(databaseName).Collection(collectionTranscripts).FindOne(ctx,
 		bson.D{{"videoId", videoID}, {"languageCode", languageCode}})
 	if res.Err() == mongo.ErrNoDocuments {
@@ -24,14 +26,18 @@ func (f *dbFacade) GetTranscript(ctx context.Context, dbClient *mongo.Client, vi
 	return t, err
 }
 
-func (f *dbFacade) InsertTranscript(ctx context.Context, dbClient *mongo.Client, transcript *transcript.Transcript) error {
-	_, err := dbClient.Database(databaseName).Collection(collectionTranscripts).InsertOne(ctx, transcript)
+func (f *dbFacade) InsertTranscript(ctx context.Context, dbClient *mongo.Client, t *transcript.Transcript) error {
+	ctx, cancel := capCtx(ctx)
+	defer cancel()
+	_, err := dbClient.Database(databaseName).Collection(collectionTranscripts).InsertOne(ctx, t)
 	return err
 }
 
-func (f *dbFacade) UpdateTranscript(ctx context.Context, dbClient *mongo.Client, transcript *transcript.Transcript) error {
-	filter := bson.D{{"videoId", transcript.VideoId}, {"languageCode", transcript.LanguageCode}}
-	update := bson.D{{"$set", bson.D{{"summaryText", transcript.SummaryText}}}}
+func (f *dbFacade) UpdateTranscript(ctx context.Context, dbClient *mongo.Client, t *transcript.Transcript) error {
+	ctx, cancel := capCtx(ctx)
+	defer cancel()
+	filter := bson.D{{"videoId", t.VideoId}, {"languageCode", t.LanguageCode}}
+	update := bson.D{{"$set", bson.D{{"summaryText", t.SummaryText}}}}
 	_, err := dbClient.Database(databaseName).Collection(collectionTranscripts).UpdateOne(ctx, filter, update)
 	return err
 }

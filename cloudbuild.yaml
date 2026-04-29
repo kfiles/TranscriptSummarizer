@@ -12,7 +12,7 @@ steps:
       - 'site/content/minutes/'
 
   # Build the Hugo site.
-  - name: 'klakegg/hugo:ext-alpine'
+  - name: 'klakegg/hugo:0.111.3-ext-alpine'
     id: hugo-build
     args:
       - '--source=site'

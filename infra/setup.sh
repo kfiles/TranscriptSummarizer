@@ -40,11 +40,16 @@ gcloud iam service-accounts create "${SA_NAME}" \
   --display-name="Transcript Summarizer Function" \
   --project="${PROJECT_ID}" || true   # ignore if already exists
 
-# Allow the function SA to read secrets
-gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
-  --member="serviceAccount:${SA_EMAIL}" \
-  --role="roles/secretmanager.secretAccessor" \
-  --condition=None
+# Grant the function SA access to each secret individually.
+# Project-level secretmanager.secretAccessor is blocked by the project's conditional
+# IAM policy, so we bind at the secret resource level instead.
+grant_secret_access() {
+  gcloud secrets add-iam-policy-binding "$1" \
+    --member="serviceAccount:${SA_EMAIL}" \
+    --role="roles/secretmanager.secretAccessor" \
+    --project="${PROJECT_ID}"
+}
+# Secrets are created later in this script; this function is called after creation.
 
 # Allow the function SA to write to GCS
 gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
@@ -65,15 +70,19 @@ gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
   --role="roles/datastore.user" \
   --condition="expression=resource.name == 'projects/${PROJECT_ID}/databases/meetingtranscripts',title=meetingtranscripts-writer-role"
 
-# Allow Cloud Build SA to deploy Firebase Hosting
+# Allow Cloud Build SA to deploy Firebase Hosting and read the firebase-ci-token secret.
+# Secret access is granted at the secret level (not project level) to avoid the
+# project's conditional IAM policy requiring an explicit condition on every binding.
 PROJECT_NUMBER=$(gcloud projects describe "${PROJECT_ID}" --format='value(projectNumber)')
 CLOUDBUILD_SA="${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com"
 gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
   --member="serviceAccount:${CLOUDBUILD_SA}" \
-  --role="roles/firebasehosting.admin"
-gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
+  --role="roles/firebasehosting.admin" \
+  --condition=None
+gcloud secrets add-iam-policy-binding "firebase-ci-token" \
   --member="serviceAccount:${CLOUDBUILD_SA}" \
-  --role="roles/secretmanager.secretAccessor"
+  --role="roles/secretmanager.secretAccessor" \
+  --project="${PROJECT_ID}"
 
 # ── GCS bucket for Hugo content ───────────────────────────────────────────────
 echo "=== Creating GCS content bucket ==="
@@ -112,24 +121,41 @@ create_secret "facebook-page-token"   "Facebook Page access token"
 create_secret "youtube-api-key"       "YouTube Data API key (public-data API key, no OAuth)"
 create_secret "firebase-ci-token"     "Firebase CI token (from: firebase login:ci)"
 
+# Grant the function SA accessor rights on each secret it needs at runtime.
+for SECRET in mongodb-uri openai-api-key facebook-page-id facebook-page-token youtube-api-key; do
+  grant_secret_access "${SECRET}"
+done
+# firebase-ci-token is used by Cloud Build SA, not the function SA — handled below.
+
 # ── Cloud Build trigger (Pub/Sub → Hugo build + Firebase deploy) ──────────────
 echo "=== Creating Cloud Build trigger ==="
 # The trigger fires whenever the pipeline function publishes to PUBSUB_TOPIC.
-gcloud builds triggers create pubsub \
-  --name="hugo-build-and-deploy" \
-  --topic="projects/${PROJECT_ID}/topics/${PUBSUB_TOPIC}" \
-  --build-config="cloudbuild.yaml" \
-  --repo-type=GITHUB \
-  --repo="github_com_kfiles_TranscriptSummarizer" \
-  --branch="^main$" \
-  --substitutions="_CONTENT_BUCKET=${CONTENT_BUCKET},_FIREBASE_PROJECT=${FIREBASE_PROJECT}" \
-  --project="${PROJECT_ID}" || true
+GITHUB_OWNER=$(gcloud builds triggers describe transcript-summarizer-push \
+  --project="${PROJECT_ID}" \
+  --format="value(github.owner)")
+GITHUB_REPO=$(gcloud builds triggers describe transcript-summarizer-push \
+  --project="${PROJECT_ID}" \
+  --format="value(github.name)")
+if gcloud builds triggers describe hugo-build-and-deploy --project="${PROJECT_ID}" &>/dev/null; then
+  echo "  Trigger hugo-build-and-deploy already exists — skipping."
+else
+  gcloud builds triggers create pubsub \
+    --name="hugo-build-and-deploy" \
+    --topic="projects/${PROJECT_ID}/topics/${PUBSUB_TOPIC}" \
+    --service-account="projects/${PROJECT_ID}/serviceAccounts/${SA_EMAIL}" \
+    --repo-type=GITHUB \
+    --repo="https://www.github.com/${GITHUB_OWNER}/${GITHUB_REPO}" \
+    --build-config="cloudbuild.yaml" \
+    --branch="main" \
+    --substitutions="_CONTENT_BUCKET=${CONTENT_BUCKET},_FIREBASE_PROJECT=${FIREBASE_PROJECT}" \
+    --project="${PROJECT_ID}"
+fi
 
 # ── Deploy Cloud Function ─────────────────────────────────────────────────────
 echo "=== Deploying Cloud Function ==="
 gcloud functions deploy youtube-webhook \
   --gen2 \
-  --runtime=go122 \
+  --runtime=go124 \
   --region="${REGION}" \
   --source=. \
   --entry-point=YouTubeWebhook \

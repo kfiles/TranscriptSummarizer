@@ -1,4 +1,16 @@
 steps:
+  # Build the officials binary and populate the MongoDB officials collection.
+  - name: 'golang:1.24'
+    id: populate-officials
+    entrypoint: bash
+    args:
+      - '-c'
+      - |
+        go build -o /tmp/officials ./cmd/officials/ &&
+        /tmp/officials
+    secretEnv:
+      - MONGODB_URI
+
   # Pull new markdown files written by the Cloud Function from GCS into the repo's
   # Hugo content directory. Existing files are preserved; only new/updated ones are added.
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -41,6 +53,8 @@ availableSecrets:
   secretManager:
     - versionName: projects/$PROJECT_ID/secrets/firebase-ci-token/versions/latest
       env: FIREBASE_TOKEN
+    - versionName: projects/$PROJECT_ID/secrets/mongodb-uri/versions/latest
+      env: MONGODB_URI
 
 # Substitution defaults — override these in the Cloud Build trigger UI or --substitutions flag.
 substitutions:

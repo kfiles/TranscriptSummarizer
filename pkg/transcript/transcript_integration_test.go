@@ -3,42 +3,35 @@
 package transcript
 
 import (
+	"context"
+	"os"
 	"testing"
+	"time"
 )
 
-// TestIntegrationTranscriptExtract retrieves captions for a known public video and
-// verifies that an English transcript can be extracted with non-empty text.
-func TestIntegrationTranscriptExtract(t *testing.T) {
+// TestIntegrationSupadataTranscribe calls the live Supadata API for a known
+// public YouTube video and verifies a non-empty English transcript is returned.
+// Skipped unless SUPADATA_API_KEY is set.
+func TestIntegrationSupadataTranscribe(t *testing.T) {
+	apiKey := os.Getenv("SUPADATA_API_KEY")
+	if apiKey == "" {
+		t.Skip("set SUPADATA_API_KEY to run Supadata integration tests")
+	}
+
 	const videoID = "zqYFtk5e8Pk"
 
-	captions, err := ListVideoCaptions(videoID)
-	if err != nil {
-		t.Fatalf("ListVideoCaptions(%q): %v", videoID, err)
-	}
-	if len(captions) == 0 {
-		t.Fatalf("ListVideoCaptions(%q): no caption tracks found", videoID)
-	}
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancel()
 
-	var enCaption *Caption
-	for i := range captions {
-		if captions[i].LanguageCode == "en" {
-			enCaption = &captions[i]
-			break
-		}
-	}
-	if enCaption == nil {
-		t.Fatalf("no English caption track found for video %q; available: %v", videoID, captions)
-	}
-
-	text, err := enCaption.ExtractText()
+	s := NewSupadataTranscriber(apiKey)
+	text, lang, err := s.Transcribe(ctx, videoID)
 	if err != nil {
-		t.Fatalf("ExtractText(): %v", err)
+		t.Fatalf("Transcribe(%q): %v", videoID, err)
 	}
 	if text == "" {
-		t.Errorf("ExtractText() returned empty transcript for video %q language %q", videoID, enCaption.LanguageCode)
+		t.Errorf("Transcribe(%q) returned empty transcript (lang=%q)", videoID, lang)
 	}
-
-	if enCaption.LanguageCode != "en" {
-		t.Errorf("language = %q, want %q", enCaption.LanguageCode, "en")
+	if lang != "en" {
+		t.Errorf("lang = %q, want %q", lang, "en")
 	}
 }

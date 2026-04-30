@@ -3,6 +3,7 @@ package webhook
 import (
 	"context"
 	"encoding/xml"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -66,16 +67,20 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 var runPipelineFn = runPipeline
 
 func runPipeline(ctx context.Context, videoID string) error {
+	log.Printf("webhook: fetching metadata for video %s", videoID)
 	video, err := transcript.GetVideoByID(videoID)
 	if err != nil {
-		return err
+		return fmt.Errorf("fetch video metadata %s: %w", videoID, err)
 	}
+	log.Printf("webhook: fetched metadata for video %s: %q", videoID, video.Title)
 
+	log.Printf("webhook: connecting to database")
 	facade := db.NewFacade()
 	client, err := db.NewClient()
 	if err != nil {
-		return err
+		return fmt.Errorf("connect to database: %w", err)
 	}
+	log.Printf("webhook: connected to database")
 	defer func() {
 		if err := client.Disconnect(ctx); err != nil {
 			log.Printf("webhook: disconnect: %v", err)

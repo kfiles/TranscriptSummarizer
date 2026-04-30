@@ -1,0 +1,3130 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+	<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+<!-- Google Tag Manager for GA4 -->
+				<script>(function(w,d,s,l,i){w.GAMeasurementID='G-2QN4W9V57F';w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+				j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+				'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+				})(window,document,'script','cpDataLayerGA4','GTM-K73C5PS');</script>
+				<!-- End Google Tag Manager for GA4 -->
+				<script type='text/javascript'>
+					var enableTelemetry = 'false'
+					var aiConfig = {
+					instrumentationKey: '1cde048e-3185-4906-aa46-c92a7312b60f'						
+					}
+					var appInsights = window.appInsights || function (a) { function b(a) { c[a] = function () { var b = arguments; c.queue.push(function () { c[a].apply(c, b) }) } } var c = { config: a }, d = document, e = window; setTimeout(function () { var b = d.createElement('script'); b.src = a.url || 'https://js.monitor.azure.com/scripts/a/ai.0.js', d.getElementsByTagName('script')[0].parentNode.appendChild(b) }); try { c.cookie = d.cookie } catch (a) { } c.queue = []; for (var f = ['Event', 'Exception', 'Metric', 'PageView', 'Trace', 'Dependency']; f.length;)b('track' + f.pop()); if (b('setAuthenticatedUserContext'), b('clearAuthenticatedUserContext'), b('startTrackEvent'), b('stopTrackEvent'), b('startTrackPage'), b('stopTrackPage'), b('flush'), !a.disableExceptionTracking) { f = 'onerror', b('_' + f); var g = e[f]; e[f] = function (a, b, d, e, h) { var i = g && g(a, b, d, e, h); return !0 !== i && c['_' + f](a, b, d, e, h), i } } return c }(aiConfig);
+					window.appInsights = appInsights, appInsights.queue && 0 === appInsights.queue.length;
+					// Add telemetry initializer
+					appInsights.queue.push(function() {
+						appInsights.context.addTelemetryInitializer(function(envelope) {
+							var telemetryItem = envelope.data.baseData;
+							// To check the telemetry item’s type:
+							if (!false)
+							{
+								//If the telemetry is not enabled, we still want to capture Google map custom event, so only allow that
+								if (envelope.name.indexOf('.Event') == -1)
+									return false;
+							}
+						});
+					});						
+					appInsights.trackPageView();
+				</script>
+	<script>
+		function populateAntiForgery(token) {
+			var input = document.createElement("input");
+			input.name = "__RequestVerificationToken";
+			input.type = "hidden";
+			input.value = token;
+			var absPat = /^https?:\/\/|^\/\//i;
+			var forms = document.getElementsByTagName("form");
+			for (var i = 0; i < forms.length; i++) {
+				if (forms[i].method == "post" &&
+					!forms[i].querySelector('[name="__RequestVerificationToken"]') &&
+					!absPat.test(forms[i].getAttribute("action"))) {
+					forms[i].appendChild(input.cloneNode());
+				}
+			}
+		}
+
+		function getAntiForgeryToken(callback, error) {
+			var xhr = new XMLHttpRequest();
+			xhr.open("GET", "/antiforgery");
+			xhr.addEventListener("load", function() {
+				try {
+					if (this.status !== 200) {
+						throw Error("Invalid status. Could not retrieve antiforgery token.");
+		}
+					var obj = JSON.parse(this.responseText);
+					callback(obj.token);
+				} catch (e) {
+					typeof error === "function" && error(e);
+				}
+			});
+			xhr.send();
+		}
+
+		getAntiForgeryToken(function(token) {
+			if (document.readyState === "complete"
+				|| document.readyState === "loaded" 
+				|| document.readyState === "interactive") {
+				populateAntiForgery(token);
+				return;
+			}
+			document.addEventListener("DOMContentLoaded", function() {
+				populateAntiForgery(token);
+			}, false);
+		}, console.error);
+			</script>
+			
+
+	<script type="text/javascript">
+		window.departmentHeader = {};
+		window.pageSectionTracker = {};
+		window.isResponsiveEnabled = true;
+		window.isRemoveSetHeights= false;
+		if (window.isRemoveSetHeights) {
+			document.documentElement.className += ' removeSetHeights';
+		}
+		window.mainMenuMediaQuery = 'screen and (max-width: 40em)';
+		window.isMobileBrowserIncludingTablets = false;
+		window.fixedResponsiveMenu = false;
+		window.fullWidthResponsiveMenu = true;
+		window.responsiveMenuHeight = '';
+		window.responsiveMenuFontSize = '';
+		window.isContentAdvisor = false;
+		(function () {
+			window.setSizeCookie = function () {
+				document.cookie = "dpi=" + window.devicePixelRatio + "; path=/";
+				document.cookie = "viewportWidth=" + window.innerWidth + "; path=/";
+				document.cookie = "viewportHeight=" + window.innerHeight + "; path=/";
+				if (screen && screen.width && screen.height) {
+					document.cookie = "screenWidth=" + screen.width + "; path=/";
+					document.cookie = "screenHeight=" + screen.height + "; path=/";
+				}
+				document.cookie = "responsiveGhost=1; path=/";
+			};
+
+			setSizeCookie();
+		}());
+	</script>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<script async src="https://docaccess.com/docbox.js"></script>
+	
+	<meta name="category0" content="Home" />
+<meta name="category1" content="Departments" />
+<meta name="category2" content="Town Clerk" />
+<meta name="category3" content="Elected Officials" />
+<meta name="category4" content="Town Wide" />
+
+	
+	<meta name="theme-color" content="#6e0715">
+	<link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
+	<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+		<title>Town Wide | Milton, MA</title>
+
+		<meta name="description" content="View elected officials&#39; contact information in the Town of Milton.">
+			<script src="/Assets/Scripts/jQuery/jquery-3.7.1.min.js"></script>
+	<script src="/Assets/Scripts/jQuery/jquery-migrate-3.5.2.min.js" type="text/javascript"></script>
+	
+
+	<!--[if IE 6]><script language="JavaScript" type="text/javascript"> var isie6 = true; </script><![endif]-->
+	<!--[if IE 7]><script language="JavaScript" type="text/javascript"> var isie7 = true; </script><![endif]-->
+	<!--[if IE 8]><script language="JavaScript" type="text/javascript"> var isie8 = true; </script><![endif]-->
+	<!--[if IE 9]><script language="JavaScript" type="text/javascript"> var isie8 = true; </script><![endif]-->
+	<script type="text/javascript"><!--
+	var intCountryCode = 840;
+	var order = '';
+//--></script>
+	
+	<link href="/-1465647691.css" rel="stylesheet" type="text/css" />	<link href="/-2022061636.css" rel="stylesheet" type="text/css" />
+
+	<link rel="stylesheet" type="text/css" href="/Assets/Styles/Print.css" media="print">
+	<script type="text/javascript">
+		window.Pages = window.Pages || {};
+		// FrontEnd RWD initialization
+		window.Pages.rwdReady = $.Deferred();
+		window.Pages.toolBarDeferred = $.Deferred();
+		window.Pages.rwdSetupComplete = $.Deferred();
+		window.Pages.megaMenuLoaded = $.Deferred();
+		window.Pages.angularToolbarComplete = $.Deferred();
+		window.Pages.frontEndToolbarComplete = $.Deferred();
+	</script>
+	<!--CPHeadContent-->
+	<script src="/739942322.js" type="text/javascript"></script>
+	
+	
+	
+	
+
+
+
+
+	<!--[if lte IE 8]><link rel="stylesheet" type="text/css" href="/App_Themes/ie8.css"><![endif]-->
+	<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="/App_Themes/ie7.css"><![endif]-->
+	<!--[if lte IE 6]><link rel="stylesheet" type="text/css" href="/App_Themes/ie6.css"><![endif]-->
+	<!--[if lt IE 9]><script type="text/javascript" src="/Scripts/html5.js"></script><![endif]-->
+
+	<script type="text/javascript">
+		setEditorVariables(false, 840);
+		function getPrintPreviewType() { return 0; } function printPreview() {pPreview(getPrintPreviewType()); }
+	</script>
+	<script src="/Assets/Scripts/AlpineJS/3.14.1/alpine.min.js" type="text/javascript" defer="defer"></script>
+</head>
+<body class="wide " >
+
+    <script>jQuery(document).click(function (event) {
+	var target = jQuery(event.target);
+	if (target.attr('src') && target.parents('.image').length && target.parents('.widget').length) {
+		var text = target.attr('title');
+		
+		if (!text.length) {
+			text = "N/A";
+		}
+		ga('send',
+			{
+				hitType: 'event',
+				eventCategory: 'Image',
+				eventAction: 'Image - ' + text,
+				eventLabel: window.location.href
+			});
+	}
+	if (target.is('button') || target.hasClass('button') || target.parents().hasClass('button')) {
+		var text = "";
+		if (target.parents('.button')[0]) {
+			text = target.parents('.button').first().text();
+		} else if (target.text().length) {
+			text = target.text();
+		} else if (target.attr('title').length) {
+			text = target.attr('title');
+		}
+		if (!text.length) {
+			text = "N/A";
+		}
+		ga('send',
+			{
+				hitType: 'event',
+				eventCategory: 'Button',
+				eventAction: 'Button - ' + text,
+				eventLabel: window.location.href
+			});
+	}
+	if (target.parents('.widgetCustomHtml').length) {
+		ga('send',
+			{
+				hitType: 'event',
+				eventCategory: 'Custom Html',
+				eventAction: 'Custom Html Clicked',
+				eventLabel: window.location.href
+			});
+	}
+	if (target.parents('.editor').length) {
+		ga('send',
+			{
+				hitType: 'event',
+				eventCategory: 'Editor',
+				eventAction: 'Editor Link Clicked',
+				eventLabel: window.location.href
+			});
+	}
+	if (target.parents('.GraphicLinks').length) {
+		var text = "";
+		var targetGraphicLink = target;
+		if (target.hasClass('widgetGraphicLinksLink')) {
+			targetGraphicLink = jQuery(target.children()[0]);
+		}
+		if (targetGraphicLink.hasClass('text')) {
+			text = targetGraphicLink.text();
+		} else if (targetGraphicLink.attr('src').length) {
+			if (targetGraphicLink.attr('alt').length) {
+				text = targetGraphicLink.attr('alt');
+			} else {
+				text = targetGraphicLink.attr('src');
+			}
+		} else {
+			text = "N/A";
+		}
+		ga('send',
+			{
+				hitType: 'event',
+				eventCategory: 'Graphic Links',
+				eventAction: 'Graphic Link - ' + text,
+				eventLabel: window.location.href
+			});
+	}
+	if (target.parents('.InfoAdvanced').length) {
+		ga('send',
+			{
+				hitType: 'event',
+				eventCategory: 'Info Advanced',
+				eventAction: 'Info Advanced Clicked',
+				eventLabel: window.location.href
+			});
+	}
+	if (target.parents('.list').length) {
+		ga('send',
+			{
+				hitType: 'event',
+				eventCategory: 'List',
+				eventAction: 'List Clicked',
+				eventLabel: window.location.href
+			});
+	}
+	if (target.parents('.megaMenuItem').length || target.parents('.topMenuItem').length) {
+		var megaMenuText = jQuery('.topMenuItem.mouseover').find('span').text();
+		var breadCrumbs = [];
+		jQuery('.breadCrumbs > li').each(function () {
+			 breadCrumbs.push(this.textContent);
+		});
+		var pageTitle = breadCrumbs.join('>');
+		var subTitleText = target.parents('.megaMenuItem').children('.widgetTitle').children().text();
+		var text = "";
+		if (pageTitle) {
+			text += pageTitle + " | ";
+		} else {
+			text += document.title + ' - ';
+		}
+		if (target.text() == "" && megaMenuText == "") {
+			text += "N/A";
+		} else if (target.text().length && megaMenuText.length) {
+			if (megaMenuText == target.text()) {
+				text += megaMenuText;
+			} else {
+				text += megaMenuText + " - " + subTitleText + " - " + target.text();
+			}
+		} else if (target.text() == "") {
+			text += megaMenuText;
+		} else {
+			text += target.text();
+		}
+		if (!text.length) {
+			text = "N/A";
+		}
+		ga('send',
+			{
+				hitType: 'event',
+				eventCategory: 'Mega Menu',
+				eventAction: 'Mega Menu : ' + text,
+				eventLabel: window.location.href
+			});
+	}
+	if (target.parents('.widgetNewsFlash').length && target.parents('.widgetItem').length) {
+		var text = jQuery(target.parents('.widgetItem')[0]).find('.widgetTitle').children().text();
+		if (!text.length) {
+			text = "N/A";
+		}
+		ga('send',
+			{
+				hitType: 'event',
+				eventCategory: 'News Flash',
+				eventAction: 'News Flash - ' + text,
+				eventLabel: window.location.href
+			});
+	}
+	if (target.hasClass('widgetQuickLinksLink') || target.find('.widgetQuickLinksLink').length) {
+		var text = target.text();
+		if (!text.length) {
+			text = "N/A";
+		}
+		ga('send',
+			{
+				hitType: 'event',
+				eventCategory: 'Quick Links',
+				eventAction: 'Quick Links - ' + text,
+				eventLabel: window.location.href
+			});
+	}
+	if (target.attr('src') && target.parents('.cpSlideshow').length) {
+		var text = target.attr('title');
+		if (!text.length) {
+			text = "N/A";
+		}
+		ga('send',
+			{
+				hitType: 'event',
+				eventCategory: 'Slideshow',
+				eventAction: 'Slideshow - ' + text,
+				eventLabel: window.location.href
+			});
+	}
+	if (target.parents('.widgetText').length) {
+		ga('send',
+			{
+				hitType: 'event',
+				eventCategory: 'Text',
+				eventAction: 'Text Link Clicked',
+				eventLabel: window.location.href
+			});
+	}
+});</script>
+	<div id="popoverModal" class="cp-PopOver cp-PopOver--modal cp-AdminWrap" style="position: fixed; display: none;">
+	<div class="cp-PopOver-header">
+		<h3 class="cp-PopOver-title"></h3>
+		<button class="cp-Btn cp-PopOver-close" onclick="closePopOverModal(event)">
+			<svg class="cp-Icon--close" alt="close" title="close">
+				<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#iconClose"></use>
+			</svg>
+		</button>
+	</div>
+	<div id="cpPopOverBody" class="cp-PopOver-body">
+		<form id="cpPopOverForm" name="cpPopOverForm" novalidate></form>
+	</div>
+	<div id="cpPopOverFooter" class="cp-PopOver-footer">
+		<div class="cp-BtnGroup" id="actionButtons">
+			<!-- Action buttons will be dynamically added here -->
+		</div>
+	</div>
+</div>
+    <div id="fb-root"></div>
+<div id=skipToContentLinks>
+<a href="#cc5f8c90dc-b4cb-431b-90ee-10648f8df655" target="_self" class="skipToContentLink">Skip to Main Content</a>
+</div>
+    <form id="frmReferenceFormForTelerikEditorDialogs"></form>
+
+        <input type="hidden" id="GoogleMapsKey" value="AIzaSyDWUuE-ifkbhxblF920N8MjpBdTg1Wt784" />
+
+
+
+    <input type="hidden" id="cpcDomain" value="https://cp-civicplusuniversity2.civicplus.com">
+    <input type="hidden" id="hdnStructureID" value="1" />
+    <input type="hidden" id="hdnContentCollectionID" value="2660290c-4ae2-4139-a062-17b2cc278932" />
+    <input type="hidden" id="hdnWorkingCopyID" value="00000000-0000-0000-0000-000000000000" />
+    <input type="hidden" id="hdnThemeID" value="1" />
+    <input type="hidden" id="pageIsFrontEnd" value="true" />
+    <input type="hidden" id="pageModuleID" />
+    <input type="hidden" id="pagePageID" value="890" />
+
+    <div id="stickyPlaceholder"></div>
+    <div id="outer-wrap" class="outer-wrap">
+        <div id="inner-wrap" class="inner-wrap">
+                <div id="divToolbars" class="cpToolbars newCP mui-fixed" style="">
+                    
+
+
+
+<!-- Begin Signed Out Bar -->
+<div class="cpToolbar user public">
+    <div class="inner selfClear">
+        <p class="dropdown"><a href="/MyAccount/ProfileCreate" class="myConnections" id="signedOutToolbarCreateProfileButton">Create a Website Account</a> <span class="welcomeMessage">- Manage notification subscriptions, save form progress and more. &nbsp;&nbsp;</span></p>
+        <ul class="nav secondary">
+	        <li><a href="/MyAccount" class="button" id="loggedOutToolbarSignInButton">Website Sign In</a></li>
+        </ul>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#signedOutToolbarCreateProfileButton').click(function (event) {
+            event.preventDefault();
+            window.location.href = '/MyAccount/ProfileCreate?from=url&url=/&dn=' + window.location.origin;
+        });
+
+			
+				$('#loggedOutToolbarSignInButton').click(function (event) {
+					event.preventDefault();
+					window.location.href = '/MyAccount/?from=url&url=' + encodeURIComponent(window.location.href.replace(window.location.origin, '')) + '&dn=' + window.location.host;
+				});
+			
+
+		if ('False' == 'True') {
+            $('#loggedOutToolbarSignInButton').hide();
+		}
+    })
+</script>
+<!-- End Signed Out Bar -->
+
+                </div>
+            <div id="bodyWrapper">
+                <div id="mainNavHolderMobile" class="mainNavHolderMobile"></div>
+                
+<div data-cpRole="structuralContainer" id="bodyContainerTS">
+<!-- Header Container --><header data-cpRole="structuralContainer" id="headerContainerTS">
+<div class="siteWrap3"><div data-cpRole="banner" id="bannerLogoTS" class="bannerLogoTS empty">
+
+
+
+
+				<a id="bannerLogoTS-48" style="			display: block; text-align: center;
+" class="bannerObject" href="/" target="_self"><img alt="Home page" class="bannerObject" height="255" src="/ImageRepository/Document?documentID=64" width="919" /></a>
+</div><nav data-cpRole="nav" id="mainNav" class="siteNav mainNav" role="navigation">
+<ol id="mainNavMenu" data-parent="1" class="rootNavMenu" role="menu"><!--
+--><li id="MainItem27" class="topMenuItem" role="none" data-pageid="27" data-displaymegamenu="True"><!--
+			--><!--
+			--> <a role = "menuitem"  aria-haspopup=true aria-expanded='false' aria-controls="mainNavMegaMenu27" id = "mainNavGovernment" class="navMainItem mainNavItem mainNavItem1 " href="/27/Government" target = "_self" >   Government  </a>			<!--
+			--><!--
+			--></li><!----><li id="MainItem376" class="topMenuItem" role="none" data-pageid="376" data-displaymegamenu="True"><!--
+			--><!--
+			--> <a role = "menuitem"  aria-haspopup=true aria-expanded='false' aria-controls="mainNavMegaMenu376" id = "mainNavBoardsCommittees" class="navMainItem mainNavItem mainNavItem2 " href="/376/Boards-Committees" target = "_self" >   Boards &amp; Committees  </a>			<!--
+			--><!--
+			--></li><!----><li id="MainItem101" class="topMenuItem" role="none" data-pageid="101" data-displaymegamenu="True"><!--
+			--><!--
+			--> <a role = "menuitem"  aria-haspopup=true aria-expanded='false' aria-controls="mainNavMegaMenu101" id = "mainNavDepartments" class="navMainItem mainNavItem mainNavItem3 " href="/101/Departments" target = "_self" >   Departments  </a>			<!--
+			--><!--
+			--></li><!----><li id="MainItem31" class="topMenuItem" role="none" data-pageid="31" data-displaymegamenu="True"><!--
+			--><!--
+			--> <a role = "menuitem"  aria-haspopup=true aria-expanded='false' aria-controls="mainNavMegaMenu31" id = "mainNavCommunity" class="navMainItem mainNavItem mainNavItem4 " href="/31/Community" target = "_self" >   Community  </a>			<!--
+			--><!--
+			--></li><!----><li id="MainItem9" class="topMenuItem" role="none" data-pageid="9" data-displaymegamenu="True"><!--
+			--><!--
+			--> <a role = "menuitem"  aria-haspopup=true aria-expanded='false' aria-controls="mainNavMegaMenu9" id = "mainNavHowDoI" class="navMainItem mainNavItem mainNavItem5 " href="/9/How-Do-I" target = "_self" >   How Do I...  </a>			<!--
+			--><!--
+			--></li><!---->
+</ol>
+
+
+	<script type="text/javascript">
+		(function () {
+			function setupMenu() {
+				const menuID = 'mainNavMenu';
+				const menuType = MAIN_MENU;
+
+				//setup menu manager properties for main menu
+				if (!menuManager.mobileMainNav && true)
+					menuManager.adjustMainItemsWidth('#' + menuID);
+				menuManager.isMainMenuEditable = false;
+				menuManager.mainMenuMaxSubMenuLevels = 4;
+				menuManager.setMOMMode(2, menuType);
+
+				//Init main menu
+				const setupDraggable = menuManager.isMainMenuEditable;
+				const urlToGetHiddenMenus = '/Pages/MenuMain/HiddenMainSubMenus?pageID=1&moduleID=&themeID=1&menuContainerID=mainNav';
+
+				menuManager.setupMenu(menuID, 'mainNav', menuType, setupDraggable, urlToGetHiddenMenus);
+				menuManager.mainMenuInit = true;
+				menuManager.mainMenuTextResizer = false;
+				if (1.00 > 0)
+					menuManager.mainMenuTextResizerRatio = 1.00;
+				if (window.isResponsiveEnabled)
+					menuManager.mainMenuReady.resolve();
+
+			}
+
+			if (document.readyState === "complete"
+				|| document.readyState === "loaded"
+				|| document.readyState === "interactive") {
+				setupMenu();
+				return;
+			}
+
+			document.addEventListener("DOMContentLoaded", setupMenu);
+		})();
+	</script>
+
+
+<aside data-cpRole="megaMenu" id="megaMenu" class="megaMenu" style="display: none;"><input type="hidden" id="megaMenuPopupDirection" value="0"><input type="hidden" id="megaMenuWidthReference" value="0"><aside role="menu" data-cpRole="contentContainer" id="mainNavMegaMenu27" class="contentTop mainNavMegaMenu megaMenuContainer pageID_27 hidden" data-orientation="horizontal">	<div id="cce66066dd-8aff-484d-8ac5-f0194fef59c2" data-containerid="e66066dd-8aff-484d-8ac5-f0194fef59c2" class="pageContent cpGrid cpGrid24">
+				                
+
+
+
+	</div>
+</aside><aside role="menu" data-cpRole="contentContainer" id="mainNavMegaMenu376" class="contentTop mainNavMegaMenu megaMenuContainer pageID_376 hidden" data-orientation="horizontal">	<div id="ccb454ca68-28b1-410b-aa66-af21338f990c" data-containerid="b454ca68-28b1-410b-aa66-af21338f990c" class="pageContent cpGrid cpGrid24">
+				                
+
+
+
+	</div>
+</aside><aside role="menu" data-cpRole="contentContainer" id="mainNavMegaMenu101" class="contentTop mainNavMegaMenu megaMenuContainer pageID_101 hidden" data-orientation="horizontal">	<div id="ccc97203ce-4a57-4e7c-9256-3572171d16f7" data-containerid="c97203ce-4a57-4e7c-9256-3572171d16f7" class="pageContent cpGrid cpGrid24">
+				                
+
+
+
+	</div>
+</aside><aside role="menu" data-cpRole="contentContainer" id="mainNavMegaMenu31" class="contentTop mainNavMegaMenu megaMenuContainer pageID_31 hidden" data-orientation="horizontal">	<div id="cc0b2eb4d0-1de2-4ad0-b404-4d70393daa97" data-containerid="0b2eb4d0-1de2-4ad0-b404-4d70393daa97" class="pageContent cpGrid cpGrid24">
+				                
+
+
+
+	</div>
+</aside><aside role="menu" data-cpRole="contentContainer" id="mainNavMegaMenu9" class="contentTop mainNavMegaMenu megaMenuContainer pageID_9 hidden" data-orientation="horizontal">	<div id="cc68895f53-3f1b-409f-8986-1e2becce322a" data-containerid="68895f53-3f1b-409f-8986-1e2becce322a" class="pageContent cpGrid cpGrid24">
+				                
+
+
+
+	</div>
+</aside></aside></nav></div>
+</header><!-- Banner --><div data-cpRole="structuralContainer" id="bannerContainerTS" class="noOverflowTS">
+<div data-cpRole="banner" id="banner1"><div data-cpRole="structuralContainer" id="bannerSizingTS">
+<div class="siteWrap"><div data-cpRole="structuralContainer" id="bannerContentTS">
+<div data-cpRole="contentContainer" id="searchTS">	<div id="cc32803de8-a3f0-4f7d-a51e-93903398650c" data-containerid="32803de8-a3f0-4f7d-a51e-93903398650c" class="pageContent cpGrid cpGrid24 isLockedContainer showInMobile">
+				                
+
+		<div class="row outer wide"><!--
+--><div class="outer col col24 first last" style="" data-widgetcontainerid="8ed8a4f3-c89e-461a-ad1d-8622ffd1ed4b">				
+	<div class="row nest first last wide">
+	
+	<div class="inner col col24 first last idd7e2ba5a-4465-4815-849a-3923d13dc202" style="" data-widgetcontainerid="d7e2ba5a-4465-4815-849a-3923d13dc202">	
+<div data-widget-id="cb73d130-8d21-4717-a7b3-74e978d089ba" data-widget-controller-path="/Layout/WidgetSearch">
+	
+	<script defer type="text/javascript" src="/Common/Controls/jquery-ui-1.14.1/jquery-ui.min.js"></script>
+	<script defer src="/Areas/Layout/Assets/Scripts/Search.js" type="text/javascript"></script>
+	<script defer type="text/javascript">
+
+		$(document).ready(function () {
+			try {
+				$(".widgetSearchButton.widgetSearchButtoncb73d130-8d21-4717-a7b3-74e978d089ba").click(function (e) {
+				e.preventDefault();
+					if (false||$("#ysnSearchOnlyDeptcb73d130-8d21-4717-a7b3-74e978d089ba").is(':checked'))
+					{
+						doWidgetSearch($(this).siblings(".widgetSearchBox").val(), Number(0));
+					}
+					else {
+						doWidgetSearch($(this).siblings(".widgetSearchBox").val(), 0);
+					}
+			});
+			$("#searchFieldcb73d130-8d21-4717-a7b3-74e978d089ba").keypress(function (e) {
+				if (window.clipboardData) {
+					if (e.keyCode === 13) {
+						if ($("#ysnSearchOnlyDeptcb73d130-8d21-4717-a7b3-74e978d089ba").is(':checked') || false) {
+								doWidgetSearch($(this).val(), Number(0));
+							} else {
+								doWidgetSearch($(this).val(), 0);
+							}
+						return false;
+					}
+				} else {
+					if (e.which === 13) {
+						if ($("#ysnSearchOnlyDeptcb73d130-8d21-4717-a7b3-74e978d089ba").is(':checked') || false) {
+								doWidgetSearch($(this).val(), Number(0));
+							} else {
+								doWidgetSearch($(this).val(), 0);
+							}
+						return false;
+					}
+				}
+				return true;
+			});
+
+				if (true) {
+					var currentRequest = null;
+					var $searchField = $("#searchFieldcb73d130-8d21-4717-a7b3-74e978d089ba").autocomplete({
+						source: function (request, response) {
+							currentRequest = $.ajax({
+								url: '/Search/AutoComplete' + ($("#ysnSearchOnlyDeptcb73d130-8d21-4717-a7b3-74e978d089ba").is(':checked') || false? '?departmentId=0' : ''),
+								dataType: "json",
+								timeout: 10000,
+								beforeSend: function () {
+									if (currentRequest != null) {
+										currentRequest.abort();
+									}
+								},
+								data:
+								{
+									term: request.term,
+								},
+								success: function (data) {
+									response(data);
+									$('.autoCompleteError').remove();
+								},
+								error: function (xmlhttprequest, textstatus, message) {
+									if (textstatus === "timeout") {
+										if ($("#searchFieldcb73d130-8d21-4717-a7b3-74e978d089ba").siblings('.autoCompleteError').length == 0)
+											$('<span class="autoCompleteError"><p class="alert error">Search autocomplete is currently not responding. Please try again later.</p></span>').insertAfter($("#searchFieldcb73d130-8d21-4717-a7b3-74e978d089ba"));
+									}
+								}
+							});
+						},
+						html: true,
+						delay: 500,
+						select: function (event, ui) {
+							$(this).val(ui.item.value);
+							$(this).next().click();
+						}
+					});
+
+					$searchField.data("ui-autocomplete")._renderItem = function (ul, item) {
+						return $("<li class=\"itemList\"></li>")
+							.data("ui-autocomplete-item", item)
+							.append("<a>" + item.label + "</a>")
+							.appendTo(ul);
+					};
+}
+}
+			catch(e) {} //we're going to eat this error. Autocomplete won't work but we dont wan't to break anything else on the page.
+		});
+	</script>
+
+	<section id="widgetPreviewSearch" class="widget widgetSearch skin39 widgetOptionSet15" style="display: block;" aria-label="Search">
+				<!-- For the button right and inside -->
+		<div class="widgetBody buttonRightInside">
+			<input class="widgetSearchBox widgetSearchBoxcb73d130-8d21-4717-a7b3-74e978d089ba" cp5ph="true" id="searchFieldcb73d130-8d21-4717-a7b3-74e978d089ba" name="searchField" onchange="searchBtnApplyQuery();" placeholder="Search..." type="text" value="" />
+						<a href="/Search/Results" id="btnSearchIcon" class="widgetSearchButton widgetSearchButtoncb73d130-8d21-4717-a7b3-74e978d089ba" role="button"><img alt="Search-1" class="imageHover" data-hover="/ImageRepository/Document?documentID=83" data-image="/ImageRepository/Document?documentID=82" src="/ImageRepository/Document?documentID=82" /></a>
+
+			<label class="searchLabel" aria-hidden="true" for="searchFieldcb73d130-8d21-4717-a7b3-74e978d089ba">Search</label>
+		</div>
+
+	</section>
+
+
+<style scoped>
+	  
+		.widgetSearch ::-webkit-input-placeholder {
+		color: #373330;
+	  }
+		.widgetSearch :-moz-placeholder { /* Firefox 18- */
+	   color: #373330;
+	}
+		.widgetSearch ::-moz-placeholder {  /* Firefox 19+ */
+	   color: #373330;
+	}
+	.widgetSearch :-ms-input-placeholder {
+	   color: #373330;
+	}
+	
+
+	.widgetSearch .widgetBody .widgetSearchBoxcb73d130-8d21-4717-a7b3-74e978d089ba
+	{
+		color: #373330;
+		font-family: Open Sans;
+height: 65px;
+border-radius: 33px;
+border: 1px solid rgba(255,255,255,1);
+background: rgba(255,255,255,1);
+padding: 0 80px 0 20px;
+box-shadow: -3.346px 3.716px 9px 0px rgba(0, 0, 0, 0.31);
+	}
+	.widgetSearch .widgetBody .widgetSearchButtoncb73d130-8d21-4717-a7b3-74e978d089ba
+	{
+		margin: 5px; padding-top: .50em; 
+padding-right: .75em;
+	}
+	.widgetSearch .widgetSearch-onlyDeptcb73d130-8d21-4717-a7b3-74e978d089ba
+	{
+		display: inline-block;
+		color: #333;
+		
+		
+		 padding-top: 10px;
+	}
+	#ysnSearchOnlyDeptcb73d130-8d21-4717-a7b3-74e978d089ba
+	{
+		position: relative;
+		top: .125em;
+	}
+
+</style>
+
+<link rel="stylesheet" href="/Common/Controls/jquery-ui-1.14.1/jquery-ui.min.css">
+<link rel="stylesheet" href="/Common/Controls/jquery-ui-1.14.1/jquery-ui.theme.min.css">
+
+
+
+<script type="text/javascript">
+	//Updates search icons href to have the correct queryString
+	function searchBtnApplyQuery() {
+		document.getElementById("btnSearchIcon").href = "/Search?searchPhrase=" + document.getElementById("searchFieldcb73d130-8d21-4717-a7b3-74e978d089ba").value;
+	}
+	</script>
+
+</div>
+	</div> <!-- inner column -->
+
+	</div> <!-- inner row -->
+
+			</div><!-- outer column --><!--		--></div> <!-- outer row -->
+
+
+	</div>
+</div>
+</div></div>
+</div>
+
+
+
+
+		<div id="banner1-92" style="display: none"></div>
+			<script type="text/javascript">
+				$(window).on("load", function () {
+					$.when(window.Pages.rwdSetupComplete)
+						.done(function () {
+							renderBanner('banner1-92',
+								'banner1',
+								{"BannerOptionID":92,"ThemeID":1,"SlotName":"banner1","Name":"Default - Town Clerk","IsDefault":false,"BannerMode":1,"SlideShowSlideTiming":null,"SlideshowTransition":0,"SlideShowTransitionTiming":null,"ImageScale":true,"ImageAlignment":1,"ImageScroll":true,"MuteSound":true,"VideoType":0,"Status":40,"SlideshowControlsPosition":0,"SlideshowControlsAlignment":0,"SlideshowBannerControlsColorScheme":0,"DisplayVideoPauseButton":false,"VideoPauseButtonAlignment":1,"VideoPauseButtonControlsAlignment":0,"VideoPauseButtonStyle":"#FFFFFF","VideoPauseButtonBackgroundStyle":"#000000","VideoPauseButtonAlignmentClass":"alignRight viewport","DisplaySlideshowPauseButton":true,"SlideshowControlsColor":"#FFFFFF","SlideshowControlsBackgroundColor":"#000000","SlideshowPauseButtonClass":"isHidden","BannerImages":[{"BannerImageID":121,"BannerOptionID":92,"FileName":"/ImageRepository/Document?documentID=2639","Height":400,"Width":2200,"StartingOn":null,"StoppingOn":null,"IsLink":false,"LinkAddress":null,"Sequence":1,"RecordStatus":0,"ModifiedBy":0,"ModifiedOn":"\/Date(-62135575200000)\/","AltText":null}],"BannerVideos":[],"RecordStatus":0,"ModifiedBy":0,"ModifiedOn":"\/Date(-62135575200000)\/"},
+								{"BannerImageID":121,"BannerOptionID":92,"FileName":"/ImageRepository/Document?documentID=2639","Height":400,"Width":2200,"StartingOn":null,"StoppingOn":null,"IsLink":false,"LinkAddress":null,"Sequence":1,"RecordStatus":0,"ModifiedBy":0,"ModifiedOn":"\/Date(-62135575200000)\/","AltText":null},
+								'/App_Themes/Interior/Images/',
+								'<img alt="" class="bannerObject" src="/ImageRepository/Document?documentID=2639" />');
+						});
+				});
+			</script>
+
+</div>
+</div><!-- Content container --><div data-cpRole="structuralContainer" id="mainContainerTS">
+<div class="siteWrap2"><div data-cpRole="structuralContainer" id="mainWrapTS" class="mainWrap" role="main">
+<div data-cpRole="structuralContainer" id="outerContentWrapTS" class="outerContentWrap">
+<div data-cpRole="structuralContainer" id="contentWrapTS" class="contentWrap">
+<div data-cpRole="breadCrumbs" id="breadCrumbs" class="breadCrumbContainer">		<ol class="semanticList breadCrumbs">
+			<li><a class="breadCrumb" href="/">Home</a></li><li><a class="breadCrumb" href="/101/Departments">Departments</a></li><li><a class="breadCrumb" href="/378/Town-Clerk">Town Clerk</a></li><li><a class="breadCrumb" href="/1065/Elected-Officials">Elected Officials</a></li><li id="currentBCPage" data-pageid="890"><a href class="breadCrumb" aria-current="page">Town Wide</a></li>
+		</ol>
+
+	   
+    
+</div><div data-cpRole="mainContentContainer" id="moduleContent">
+	
+	<div id="page" class="moduleContentNew">
+		
+
+	<input id="hdnPageID" name="hdnPageID" type="hidden" value="890" />
+	<input id="hdnParentID" name="hdnParentID" type="hidden" value="1065" />
+	<input id="hdnVersionID" name="hdnVersionID" type="hidden" value="3045" />
+	<input id="pageMenuTitle" name="pageMenuTitle" type="hidden" value="Town Wide" />
+	<input id="pageShowFeatureColumn" name="pageShowFeatureColumn" type="hidden" value="False" />
+	<input id="hdnIsLayoutPage" name="hdnIsLayoutPage" type="hidden" value="False" />
+	<input id="hdnPageStatus" name="hdnPageStatus" type="hidden" value="Published" />
+
+				<h1 id="versionHeadLine" class="headline">
+
+Town Wide		</h1>
+	
+		<div id="cc5f8c90dc-b4cb-431b-90ee-10648f8df655" data-containerid="5f8c90dc-b4cb-431b-90ee-10648f8df655" class="pageContent cpGrid cpGrid24"  data-contentcontainerbreakpoint="30" >
+			
+
+		<div class="row outer wide"><!--
+--><div class="outer col col24 first last" style="" data-widgetcontainerid="4e5d6fc0-ed7b-4a46-a0d1-5c633fff6e79">				
+	<div class="row nest first wide">
+	
+	<div class="inner col col24 first last id43cfdb1a-fb14-4f82-9036-2cef467fbc92" style="" data-widgetcontainerid="43cfdb1a-fb14-4f82-9036-2cef467fbc92">	
+
+
+
+<div data-widget-id="90628138-5471-4d6d-97bf-99e3bb82b662" data-moduleName="list" id="widgetText90628138-5471-4d6d-97bf-99e3bb82b662" class="widget widgetText">
+	<div class="widgetBody pageStyles" id="div90628138-5471-4d6d-97bf-99e3bb82b662">
+
+		<div style="min-height: 18px;">
+			<div class="textContent" >Town Wide Elected Officials</div>
+		</div>
+	</div>
+</div>
+
+<style>
+	.widget .textContent p:first-child {
+		padding-top: 0px;
+		margin-top: 0px;
+	}
+
+</style>
+
+	</div> <!-- inner column -->
+
+	</div> <!-- inner row -->
+	<div class="row nest last wide">
+	
+	<div class="inner col col24 first last id6d5fda31-fcb1-4daa-aea1-8117d3a49b9d" style="" data-widgetcontainerid="6d5fda31-fcb1-4daa-aea1-8117d3a49b9d">	
+
+	<div id="divTabbed0ec54e67-5fcf-44d4-9d79-c41316d631e5" class="widget widgetTabbed narrow skin43 accordionTabs" data-widgetid="0ec54e67-5fcf-44d4-9d79-c41316d631e5">
+
+		<div class="cpTabPanels">
+					<ol class="tabbedWidgetNarrow cpTabs  accordion"  aria-hidden="False.ToString().ToLowerInvariant()" >
+						<li class="" role="presentation">	<a href="#tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_0" class="tabButton" id="tabBtnNarrow0ec54e67-5fcf-44d4-9d79-c41316d631e5_0" role="button" aria-controls="tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_0" aria-expanded="false" ><span class="tabName editable" data-sequence="0" data-tabname="Select Board &amp; Surveyor of the Highway" contenteditable="false">Select Board & Surveyor of the Highway</span></a>
+</li>
+					</ol>
+				<div class="tabbedWidget cpTabPanel " style="display: none;" id="tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_0" role="region" aria-labelledby="tabBtn0ec54e67-5fcf-44d4-9d79-c41316d631e5_0" >
+
+
+
+
+
+
+
+
+
+<div data-widget-id="47a63a7c-7246-4655-ab08-84bf85ed530d" data-moduleWidgetType="cityDirectory" data-widget-controller-path="/CityDirectory/Widget">
+	<div id="cityDirectoryWidget47a63a7c-7246-4655-ab08-84bf85ed530d" class="widget widgetStaffDirectory skin43 wide" >
+			<div class="widgetHeader">
+							</div>
+						<div class="widgetBody cpGrid cpGrid2">
+				<div class="row  wide">
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Winston Daley
+			
+		</h4>
+		<div class="field p-job-title">Vice-Chair</div>
+				<div class="field u-email"><a href="mailto:wdaley@miltonma.gov">Email Winston Daley</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Meghan  Haggerty
+			
+		</h4>
+		<div class="field p-job-title">Secretary</div>
+				<div class="field u-email"><a href="mailto:mhaggerty@miltonma.gov">Email Meghan Haggerty</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+				</div>
+				<div class="row  wide">
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			John Driscoll
+			
+		</h4>
+		<div class="field p-job-title">Member</div>
+				<div class="field u-email"><a href="mailto:jdriscoll@miltonma.gov">Email John Driscoll</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Peter Obersheimer
+			
+		</h4>
+		<div class="field p-job-title">Member</div>
+				<div class="field u-email"><a href="mailto:pobersheimer@miltonma.gov">Email Peter Obersheimer</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+				</div>
+				<div class="row  wide">
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Megan Nolan
+			
+		</h4>
+		<div class="field p-job-title">Member</div>
+				<div class="field u-email"><a href="mailto:mnolan@miltonma.gov">Email Megan Nolan</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+				</div>
+
+				</div>
+	</div>
+</div>				</div>
+					<ol class="tabbedWidgetNarrow cpTabs  accordion"  aria-hidden="False.ToString().ToLowerInvariant()" >
+						<li class="" role="presentation">	<a href="#tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_1" class="tabButton" id="tabBtnNarrow0ec54e67-5fcf-44d4-9d79-c41316d631e5_1" role="button" aria-controls="tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_1" aria-expanded="false" ><span class="tabName editable" data-sequence="1" data-tabname="Town Clerk" contenteditable="false">Town Clerk</span></a>
+</li>
+					</ol>
+				<div class="tabbedWidget cpTabPanel " style="display: none;" id="tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_1" role="region" aria-labelledby="tabBtn0ec54e67-5fcf-44d4-9d79-c41316d631e5_1" >
+
+
+
+
+
+
+
+
+
+<div data-widget-id="5757b38e-cf43-4132-a99d-e3086d2a4536" data-moduleWidgetType="cityDirectory" data-widget-controller-path="/CityDirectory/Widget">
+	<div id="cityDirectoryWidget5757b38e-cf43-4132-a99d-e3086d2a4536" class="widget widgetStaffDirectory skin43 wide" >
+			<div class="widgetHeader">
+							</div>
+						<ol class="semanticList">
+			<li class="widgetItem h-card">
+
+
+				<h4 class="widgetTitle field p-name">
+					Susan M. Galvin
+					
+				</h4>
+				<div class="field p-job-title">Town Clerk</div>
+						<div class="field u-email"><a href="mailto:sgalvin@miltonma.gov">Email Susan Galvin </a></div>
+
+
+					<div class="field p-tel">Phone: <a href="tel:6178984859">617-898-4859</a></div>
+
+
+
+				<br />
+			</li>
+									</ol>
+	</div>
+</div>				</div>
+					<ol class="tabbedWidgetNarrow cpTabs  accordion"  aria-hidden="False.ToString().ToLowerInvariant()" >
+						<li class="" role="presentation">	<a href="#tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_2" class="tabButton" id="tabBtnNarrow0ec54e67-5fcf-44d4-9d79-c41316d631e5_2" role="button" aria-controls="tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_2" aria-expanded="false" ><span class="tabName editable" data-sequence="2" data-tabname="Board of Assessors" contenteditable="false">Board of Assessors</span></a>
+</li>
+					</ol>
+				<div class="tabbedWidget cpTabPanel " style="display: none;" id="tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_2" role="region" aria-labelledby="tabBtn0ec54e67-5fcf-44d4-9d79-c41316d631e5_2" >
+
+
+
+
+
+
+
+
+
+<div data-widget-id="fcaa7bb9-d99f-4e5b-b1fd-6cccacf9798b" data-moduleWidgetType="cityDirectory" data-widget-controller-path="/CityDirectory/Widget">
+	<div id="cityDirectoryWidgetfcaa7bb9-d99f-4e5b-b1fd-6cccacf9798b" class="widget widgetStaffDirectory skin43 wide" >
+			<div class="widgetHeader">
+							</div>
+						<div class="widgetBody cpGrid cpGrid2">
+				<div class="row  wide">
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			William E. Bennett
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:wbennett@miltonma.gov">Email William E. Bennett</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Brian Manning Cronin
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:bcronin@miltonma.gov">Email Brian Manning Cronin</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+				</div>
+				<div class="row  wide">
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			C. Robert Reetz
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:RReetz@miltonma.gov">Email C. Robert Reetz</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+				</div>
+
+				</div>
+	</div>
+</div>				</div>
+					<ol class="tabbedWidgetNarrow cpTabs  accordion"  aria-hidden="False.ToString().ToLowerInvariant()" >
+						<li class="" role="presentation">	<a href="#tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_3" class="tabButton" id="tabBtnNarrow0ec54e67-5fcf-44d4-9d79-c41316d631e5_3" role="button" aria-controls="tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_3" aria-expanded="false" ><span class="tabName editable" data-sequence="3" data-tabname=" School COMMITTEE" contenteditable="false"> School COMMITTEE</span></a>
+</li>
+					</ol>
+				<div class="tabbedWidget cpTabPanel " style="display: none;" id="tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_3" role="region" aria-labelledby="tabBtn0ec54e67-5fcf-44d4-9d79-c41316d631e5_3" >
+
+
+
+
+
+
+
+
+
+<div data-widget-id="9d776862-c4c8-483f-b841-2f9053ef7837" data-moduleWidgetType="cityDirectory" data-widget-controller-path="/CityDirectory/Widget">
+	<div id="cityDirectoryWidget9d776862-c4c8-483f-b841-2f9053ef7837" class="widget widgetStaffDirectory skin43 wide" >
+			<div class="widgetHeader">
+							</div>
+						<div class="widgetBody cpGrid cpGrid2">
+				<div class="row  wide">
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Elizabeth Marshall Carroll
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:ecarroll@miltonps.org">Email Elizabeth Marshall Carroll</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Beverly Ross Denny
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:brossdenny@miltonps.org">Email Beverly Ross Denny</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+				</div>
+				<div class="row  wide">
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Mark W. Loring
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:mloring@miltonps.org">Email Mark W. Loring</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Celina Miranda
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:cmiranda@miltonps.org">Email Celina Miranda</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+				</div>
+				<div class="row  wide">
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Bao Qiu
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:bqiu@miltonps.org">Email Bao Qiu</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Annamma Varghese
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:avarghese@miltonps.org">Email Annamma Varghese</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+				</div>
+
+				</div>
+	</div>
+</div>				</div>
+					<ol class="tabbedWidgetNarrow cpTabs  accordion"  aria-hidden="False.ToString().ToLowerInvariant()" >
+						<li class="" role="presentation">	<a href="#tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_4" class="tabButton" id="tabBtnNarrow0ec54e67-5fcf-44d4-9d79-c41316d631e5_4" role="button" aria-controls="tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_4" aria-expanded="false" ><span class="tabName editable" data-sequence="4" data-tabname=" Blue Hills Regional Technical School" contenteditable="false"> Blue Hills Regional Technical School</span></a>
+</li>
+					</ol>
+				<div class="tabbedWidget cpTabPanel " style="display: none;" id="tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_4" role="region" aria-labelledby="tabBtn0ec54e67-5fcf-44d4-9d79-c41316d631e5_4" >
+
+<div class="widget editor pageStyles narrow" id="divEditor89bcabc6-704f-4fc0-b04c-e1c06f6690f2" data-elementqueryclasses='{"wide-narrow":"min-width:25em"}'>
+	    <div class="fr-view">
+
+
+        <h3 class="subhead2">Marybeth Joyce</h3><p><a href="mailto:mjoyce@bnhc.org">Email Marybeth Joyce</a></p>
+    </div>
+
+<script type="text/javascript">
+	$(document).ready(function (e) {		
+	    renderSlideshowIfApplicable($('#divEditor' + '89bcabc6-704f-4fc0-b04c-e1c06f6690f2'));
+	});
+</script>
+</div>
+				</div>
+					<ol class="tabbedWidgetNarrow cpTabs  accordion"  aria-hidden="False.ToString().ToLowerInvariant()" >
+						<li class="" role="presentation">	<a href="#tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_5" class="tabButton" id="tabBtnNarrow0ec54e67-5fcf-44d4-9d79-c41316d631e5_5" role="button" aria-controls="tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_5" aria-expanded="false" ><span class="tabName editable" data-sequence="5" data-tabname=" Park Commissioners" contenteditable="false"> Park Commissioners</span></a>
+</li>
+					</ol>
+				<div class="tabbedWidget cpTabPanel " style="display: none;" id="tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_5" role="region" aria-labelledby="tabBtn0ec54e67-5fcf-44d4-9d79-c41316d631e5_5" >
+
+
+
+
+
+
+
+
+
+<div data-widget-id="a1ca80b9-e242-449c-af5b-5141051adce3" data-moduleWidgetType="cityDirectory" data-widget-controller-path="/CityDirectory/Widget">
+	<div id="cityDirectoryWidgeta1ca80b9-e242-449c-af5b-5141051adce3" class="widget widgetStaffDirectory skin43 wide" >
+			<div class="widgetHeader">
+							</div>
+						<div class="widgetBody cpGrid cpGrid2">
+				<div class="row  wide">
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Theodore G. Carroll
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:tcarroll@miltonma.gov">Email Theodore G. Carroll</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Robert Levash
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:rlevash@miltonma.gov">Email Robert Levash</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+				</div>
+				<div class="row  wide">
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Carolyn Cahill
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:ccahill@miltonma.gov">Email Carolyn Cahill</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+				</div>
+
+				</div>
+	</div>
+</div>				</div>
+					<ol class="tabbedWidgetNarrow cpTabs  accordion"  aria-hidden="False.ToString().ToLowerInvariant()" >
+						<li class="" role="presentation">	<a href="#tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_6" class="tabButton" id="tabBtnNarrow0ec54e67-5fcf-44d4-9d79-c41316d631e5_6" role="button" aria-controls="tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_6" aria-expanded="false" ><span class="tabName editable" data-sequence="6" data-tabname="Board of Health" contenteditable="false">Board of Health</span></a>
+</li>
+					</ol>
+				<div class="tabbedWidget cpTabPanel " style="display: none;" id="tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_6" role="region" aria-labelledby="tabBtn0ec54e67-5fcf-44d4-9d79-c41316d631e5_6" >
+
+
+
+
+
+
+
+
+
+<div data-widget-id="1b7c5940-7d35-4779-be7a-006a880bc631" data-moduleWidgetType="cityDirectory" data-widget-controller-path="/CityDirectory/Widget">
+	<div id="cityDirectoryWidget1b7c5940-7d35-4779-be7a-006a880bc631" class="widget widgetStaffDirectory skin43 wide" >
+			<div class="widgetHeader">
+							</div>
+						<div class="widgetBody cpGrid cpGrid2">
+				<div class="row  wide">
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Roxanne F. Musto
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:rmusto@miltonma.gov">Email Roxanne F. Musto</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Mary F. Stenson
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:mstenson@miltonma.gov">Email Mary F. Stenson</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+				</div>
+				<div class="row  wide">
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Laura T. Richards
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:lrichards@miltonma.gov">Email Laura T. Richards</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+				</div>
+
+				</div>
+	</div>
+</div>				</div>
+					<ol class="tabbedWidgetNarrow cpTabs  accordion"  aria-hidden="False.ToString().ToLowerInvariant()" >
+						<li class="" role="presentation">	<a href="#tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_7" class="tabButton" id="tabBtnNarrow0ec54e67-5fcf-44d4-9d79-c41316d631e5_7" role="button" aria-controls="tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_7" aria-expanded="false" ><span class="tabName editable" data-sequence="7" data-tabname="Trustees of the Public Library" contenteditable="false">Trustees of the Public Library</span></a>
+</li>
+					</ol>
+				<div class="tabbedWidget cpTabPanel " style="display: none;" id="tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_7" role="region" aria-labelledby="tabBtn0ec54e67-5fcf-44d4-9d79-c41316d631e5_7" >
+
+
+
+
+
+
+
+
+
+<div data-widget-id="e170d210-b756-48a1-a89c-579a5ee207bb" data-moduleWidgetType="cityDirectory" data-widget-controller-path="/CityDirectory/Widget">
+	<div id="cityDirectoryWidgete170d210-b756-48a1-a89c-579a5ee207bb" class="widget widgetStaffDirectory skin43 wide" >
+			<div class="widgetHeader">
+							</div>
+						<div class="widgetBody cpGrid cpGrid2">
+				<div class="row  wide">
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Hyacinth Crichlow
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:hcrichlow@miltonma.gov">Email Hyacinth Crichlow</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Sean Bentley
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:sbentley@miltonma.gov">Email Sean Bentley</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+				</div>
+				<div class="row  wide">
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			John W. Folcarelli
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:jfolcarelli@miltonma.gov">Email John W. Folcarelli</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Paul Sitton Hays
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:phays@miltonma.gov">Email Paul Sitton Hays</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+				</div>
+				<div class="row  wide">
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Kristine R. Hodlin
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:khodlin@miltonma.gov">Email Kristine R. Hodlin</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Jaime Leigh Levash
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:jlevash@miltonma.gov">Email Jaime Leigh Levash</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+				</div>
+				<div class="row  wide">
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Sindu M. Meier
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:smeier@miltonma.gov">Email Sindu M. Meier</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Susan Doyle
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:sdoyle@miltonma.gov">Email Susan Doyle</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+				</div>
+				<div class="row  wide">
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			James C. Potter
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:jpotter@miltonma.gov">Email James C. Potter</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+				</div>
+
+				</div>
+	</div>
+</div>				</div>
+					<ol class="tabbedWidgetNarrow cpTabs  accordion"  aria-hidden="False.ToString().ToLowerInvariant()" >
+						<li class="" role="presentation">	<a href="#tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_8" class="tabButton" id="tabBtnNarrow0ec54e67-5fcf-44d4-9d79-c41316d631e5_8" role="button" aria-controls="tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_8" aria-expanded="false" ><span class="tabName editable" data-sequence="8" data-tabname="Constables" contenteditable="false">Constables</span></a>
+</li>
+					</ol>
+				<div class="tabbedWidget cpTabPanel " style="display: none;" id="tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_8" role="region" aria-labelledby="tabBtn0ec54e67-5fcf-44d4-9d79-c41316d631e5_8" >
+
+
+
+
+
+
+
+
+
+<div data-widget-id="f034a754-765e-4966-8b6e-b3573d491a3c" data-moduleWidgetType="cityDirectory" data-widget-controller-path="/CityDirectory/Widget">
+	<div id="cityDirectoryWidgetf034a754-765e-4966-8b6e-b3573d491a3c" class="widget widgetStaffDirectory skin43 wide" >
+			<div class="widgetHeader">
+							</div>
+						<div class="widgetBody cpGrid cpGrid2">
+				<div class="row  wide">
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Tamara A. Berton
+			
+		</h4>
+		<div class="field p-job-title"></div>
+
+			<div class="field p-tel">Phone: <a href="tel:6174074007">617-407-4007</a></div>
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Eric Issner
+			
+		</h4>
+		<div class="field p-job-title"></div>
+
+			<div class="field p-tel">Phone: <a href="tel:6176330030">617-633-0030</a></div>
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+				</div>
+				<div class="row  wide">
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			William J. Neville
+			
+		</h4>
+		<div class="field p-job-title"></div>
+
+			<div class="field p-tel">Phone: <a href="tel:6174605532">617-460-5532</a></div>
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Kevin Chrisom Jr
+			
+		</h4>
+		<div class="field p-job-title"></div>
+
+			<div class="field p-tel">Phone: <a href="tel:8573420392">(857)-342-0392</a></div>
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+				</div>
+
+				</div>
+	</div>
+</div>				</div>
+					<ol class="tabbedWidgetNarrow cpTabs  accordion"  aria-hidden="False.ToString().ToLowerInvariant()" >
+						<li class="" role="presentation">	<a href="#tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_9" class="tabButton" id="tabBtnNarrow0ec54e67-5fcf-44d4-9d79-c41316d631e5_9" role="button" aria-controls="tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_9" aria-expanded="false" ><span class="tabName editable" data-sequence="9" data-tabname="Trustees of the Cemetery" contenteditable="false">Trustees of the Cemetery</span></a>
+</li>
+					</ol>
+				<div class="tabbedWidget cpTabPanel " style="display: none;" id="tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_9" role="region" aria-labelledby="tabBtn0ec54e67-5fcf-44d4-9d79-c41316d631e5_9" >
+
+
+
+
+
+
+
+
+
+<div data-widget-id="79922b4c-6527-4b75-80df-26b0fa237699" data-moduleWidgetType="cityDirectory" data-widget-controller-path="/CityDirectory/Widget">
+	<div id="cityDirectoryWidget79922b4c-6527-4b75-80df-26b0fa237699" class="widget widgetStaffDirectory skin43 wide" >
+			<div class="widgetHeader">
+							</div>
+						<div class="widgetBody cpGrid cpGrid2">
+				<div class="row  wide">
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			James A. Coyne
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:jcoyne@miltonma.gov">Email James A. Coyne</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Jed Dolan
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:JDolan@miltonma.gov">Email Jed Dolan</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+				</div>
+				<div class="row  wide">
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Terence J. Driscoll
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:tdriscoll@miltonma.gov">Email Terence J. Driscoll</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Stephen J. Pender
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:spender@miltonma.gov">Email Stephen J. Pender</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+				</div>
+				<div class="row  wide">
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Joseph M. Reardon
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:jreardon@miltonma.gov">Email Joseph M. Reardon</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+				</div>
+
+				</div>
+	</div>
+</div>				</div>
+					<ol class="tabbedWidgetNarrow cpTabs  accordion"  aria-hidden="False.ToString().ToLowerInvariant()" >
+						<li class="" role="presentation">	<a href="#tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_10" class="tabButton" id="tabBtnNarrow0ec54e67-5fcf-44d4-9d79-c41316d631e5_10" role="button" aria-controls="tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_10" aria-expanded="false" ><span class="tabName editable" data-sequence="10" data-tabname="Town Moderator" contenteditable="false">Town Moderator</span></a>
+</li>
+					</ol>
+				<div class="tabbedWidget cpTabPanel " style="display: none;" id="tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_10" role="region" aria-labelledby="tabBtn0ec54e67-5fcf-44d4-9d79-c41316d631e5_10" >
+
+
+
+
+
+
+
+
+
+<div data-widget-id="60bb9e41-1c39-4696-b496-59a5788f0270" data-moduleWidgetType="cityDirectory" data-widget-controller-path="/CityDirectory/Widget">
+	<div id="cityDirectoryWidget60bb9e41-1c39-4696-b496-59a5788f0270" class="widget widgetStaffDirectory skin43 wide" >
+			<div class="widgetHeader">
+							</div>
+						<div class="widgetBody cpGrid cpGrid2">
+				<div class="row  wide">
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Elizabeth Dillon
+			
+		</h4>
+		<div class="field p-job-title">Town Moderator</div>
+				<div class="field u-email"><a href="mailto:edillon@miltonma.gov">Email the Town Moderator</a></div>
+
+			<div class="field p-tel">Phone: </div>
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+				</div>
+
+				</div>
+	</div>
+</div>				</div>
+					<ol class="tabbedWidgetNarrow cpTabs  accordion"  aria-hidden="False.ToString().ToLowerInvariant()" >
+						<li class="" role="presentation">	<a href="#tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_11" class="tabButton" id="tabBtnNarrow0ec54e67-5fcf-44d4-9d79-c41316d631e5_11" role="button" aria-controls="tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_11" aria-expanded="false" ><span class="tabName editable" data-sequence="11" data-tabname="Housing Authority" contenteditable="false">Housing Authority</span></a>
+</li>
+					</ol>
+				<div class="tabbedWidget cpTabPanel " style="display: none;" id="tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_11" role="region" aria-labelledby="tabBtn0ec54e67-5fcf-44d4-9d79-c41316d631e5_11" >
+
+
+
+
+
+
+
+
+
+<div data-widget-id="5ad1cf9c-131e-431a-8b38-39347e1a2d66" data-moduleWidgetType="cityDirectory" data-widget-controller-path="/CityDirectory/Widget">
+	<div id="cityDirectoryWidget5ad1cf9c-131e-431a-8b38-39347e1a2d66" class="widget widgetStaffDirectory skin43 wide" >
+			<div class="widgetHeader">
+							</div>
+						<div class="widgetBody cpGrid cpGrid2">
+				<div class="row  wide">
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Lee B. Cary
+			
+		</h4>
+		<div class="field p-job-title">Treasurer</div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Joseph A. Duffy, Jr.
+			
+		</h4>
+		<div class="field p-job-title">Chairman</div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+				</div>
+				<div class="row  wide">
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			June Elam-Mooers
+			
+		</h4>
+		<div class="field p-job-title">Assistant Treasurer and Governor Appointee</div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Marilynn Morgan
+			
+		</h4>
+		<div class="field p-job-title">Member</div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+				</div>
+				<div class="row  wide">
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Marilynn Morgan
+			
+		</h4>
+		<div class="field p-job-title">Member</div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Robert E. Powers, Jr.
+			
+		</h4>
+		<div class="field p-job-title">Member</div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+				</div>
+
+				</div>
+	</div>
+</div>				</div>
+					<ol class="tabbedWidgetNarrow cpTabs  accordion"  aria-hidden="False.ToString().ToLowerInvariant()" >
+						<li class="" role="presentation">	<a href="#tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_12" class="tabButton" id="tabBtnNarrow0ec54e67-5fcf-44d4-9d79-c41316d631e5_12" role="button" aria-controls="tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_12" aria-expanded="false" ><span class="tabName editable" data-sequence="12" data-tabname="Planning Board" contenteditable="false">Planning Board</span></a>
+</li>
+					</ol>
+				<div class="tabbedWidget cpTabPanel " style="display: none;" id="tab0ec54e67-5fcf-44d4-9d79-c41316d631e5_12" role="region" aria-labelledby="tabBtn0ec54e67-5fcf-44d4-9d79-c41316d631e5_12" >
+
+
+
+
+
+
+
+
+
+<div data-widget-id="865c2ca3-cc86-4fdc-98ec-967fe5cca41e" data-moduleWidgetType="cityDirectory" data-widget-controller-path="/CityDirectory/Widget">
+	<div id="cityDirectoryWidget865c2ca3-cc86-4fdc-98ec-967fe5cca41e" class="widget widgetStaffDirectory skin43 wide" >
+			<div class="widgetHeader">
+							</div>
+						<div class="widgetBody cpGrid cpGrid2">
+				<div class="row  wide">
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Jim P. Davis
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:jdavis@miltonma.gov">Email Jim P. Davis</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Sean P. Fahy
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:sfahy@miltonma.gov">Email Sean P. Fahy</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+				</div>
+				<div class="row  wide">
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Meredith M. Hall
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:mhall@miltonma.gov">Email Meredith M. Hall</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Margaret Teresa Oldfield
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:MOldfield@miltonma.gov">Email Margaret Teresa Oldfield</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+				</div>
+				<div class="row  wide">
+						<div class="col col1" style="padding: 5px;">
+							<ol class="semanticList">
+									<li class="widgetItem h-card">
+
+		<h4 class="widgetTitle field p-name">
+			Cheryl Friedman Tougias
+			
+		</h4>
+		<div class="field p-job-title"></div>
+				<div class="field u-email"><a href="mailto:ctougias@miltonma.gov">Email Cheryl Friedman Tougias</a></div>
+
+				
+		<br />
+	</li>
+
+							</ol>
+						</div>
+				</div>
+
+				</div>
+	</div>
+</div>				</div>
+					</div>
+	</div>
+	<script type="text/javascript">
+
+		//If responsive not enabled, execute this after a timeout
+		if(!isResponsiveEnabled)
+		{
+			window.setTimeout(function(){
+				var tabbedWidgetID = 'divTabbed0ec54e67-5fcf-44d4-9d79-c41316d631e5';
+				typeof setTabbedWidgetsTabHeight === "function" && setTabbedWidgetsTabHeight(tabbedWidgetID);
+			}, 1500);
+		}
+
+		function reinitCarousels() {
+			if (window.carouselsToInit) {
+				for (var i = 0; i < window.carouselsToInit.length; i++) {
+					carouselsToInit[i]();
+				}
+			}
+		}
+		function sizeTabbedContent(element){
+			if(window.Pages){
+				if(window.Pages.onResizeHandlers){
+					var setTabbedInterval = setInterval(function () {
+						window.Pages.onResizeHandlers.forEach(function(car){car();});
+					}, 25)
+
+
+					setTimeout(function () {
+						clearInterval(setTabbedInterval);
+						if ($.cookie("enableLiveEdit") === "true") {
+							setInterval(function () {
+								window.Pages.onResizeHandlers.forEach(function(car){car();});
+							}, 2000);
+						}
+					}, 2500);
+					element.onclick="window.setTimeout(function(){reinitCarousels();},2);"
+				}
+			}
+		}
+
+		function adjustTab(e) {
+			e.preventDefault();
+			window.setTimeout(function(){
+				reinitCarousels();
+			}, 2);
+			sizeTabbedContent(this);
+		}
+
+		var tabButtons = document.querySelectorAll("#divTabbed0ec54e67-5fcf-44d4-9d79-c41316d631e5 .tabButton");
+
+		tabButtons.forEach(function (tabButton) {
+			tabButton.addEventListener("click", adjustTab);
+		});
+
+	</script>
+
+
+	</div> <!-- inner column -->
+
+	</div> <!-- inner row -->
+
+			</div><!-- outer column --><!--		--></div> <!-- outer row -->
+
+
+		</div>
+
+	</div>
+
+	
+	<div class="newCP">
+
+	</div>
+</div>
+</div><aside data-cpRole="contentContainer" id="featureColumn" class="secondaryContent">	<div id="ccd6923f64-2522-4bce-8783-61ad1b416b69" data-containerid="d6923f64-2522-4bce-8783-61ad1b416b69" class="pageContent cpGrid cpGrid24 showInMobile" data-contentcontainerbreakpoint="40">
+				                
+
+
+
+	</div>
+</aside>
+</div><div data-cpRole="structuralContainer" id="siteSidebarTS" class="siteSidebar">
+<aside data-cpRole="contentContainer" id="sidebarContainer1TS">	<div id="cc42a87b68-cf2f-45a9-a950-32b52a4c00e9" data-containerid="42a87b68-cf2f-45a9-a950-32b52a4c00e9" class="pageContent cpGrid cpGrid24 showInMobile">
+				                
+
+
+
+	</div>
+</aside><nav data-cpRole="nav" id="secondaryNav" class="siteNav secondaryNav">
+
+
+
+
+
+	<ol role="menu" id="secondaryMenusecondaryNav" data-parent="1065" class="rootNavMenu accordionNav">
+	<li class="topMenuItem sideNavLi hasAccordionChildren" id="SideItem495" data-pageid="495">
+		<div class="accordionNavItem">
+			<a href="/495/Legislative-District" target="_self" class="navMainItem secondaryNavItem cpComponent" data-type="SecondaryMainItem">Legislative District</a>
+		</div>
+			</li>
+	<li class="topMenuItem sideNavLi hasAccordionChildren" id="SideItem525" data-pageid="525">
+		<div class="accordionNavItem">
+			<a href="/525/Town-Meeting-Members" target="_self" class="navMainItem secondaryNavItem cpComponent" data-type="SecondaryMainItem">Town Meeting Members</a>
+				<a href="#" role="button" class="openAccordionNav accordionSecondaryNavItem" aria-label="Town Meeting Members Submenu" aria-expanded="false" aria-controls="submenu-lvl1-525"></a>
+		</div>
+					<ol aria-hidden="true" class="accordionNavContainer accordionNavContainer--lvl1" id="submenu-lvl1-525" style="display: none;" data-parent="525">
+						<li class="sideNavLi subMenuItem hasAccordionChildren" id="SideItem528" data-pageid="528">
+			<div class="accordionNavItem">
+				<a href="/Archive.aspx?AMID=48" target="_self" class="navMenuItem cpComponent" data-type="SecondaryMenuItem"><span lang="en">Town Meeting Member Attendance</span></a>
+			</div>
+					</li>
+
+			</ol>
+	</li>
+	<li class="topMenuItem sideNavLi hasAccordionChildren" id="SideItem890" data-pageid="890">
+		<div class="accordionNavItem">
+			<a href="/890/Town-Wide" target="_self" class="navMainItem secondaryNavItem cpComponent" data-type="SecondaryMainItem">Town Wide</a>
+		</div>
+			</li>
+
+	</ol>
+
+
+	<script type="text/javascript">
+		window.addEventListener('load', function () {
+			//setup menu manager properties for secondary menu
+			menuManager.isSideMenuEditable = false;
+			menuManager.sideMenuMaxSubMenuLevels = 4;
+			menuManager.sideMenuHasCustomLinks = false;
+		});
+	</script>
+
+	<script type="text/javascript">
+		window.addEventListener('load', function () {
+			$('*[id^="SideItem"]').each(function () {
+				var ids = $('[id="' + this.id + '"]');
+				if (ids.length > 1)
+					$.each(ids, function (index, value) {
+						value.id = value.id + '_' + index;
+					});
+			});
+
+			$('.hasAccordionChildren .openAccordionNav').click(function (e) {
+				e.preventDefault();
+				showHideAccordionMenuForSecondaryNav($(this));
+			});
+
+			$("#secondaryNav .grippy").each(function () {
+				menuManager.setupDraggableElement($(this), SIDE_MENU, '#secondaryNav');
+			});
+
+			$("#secondaryNav li").each(function () {
+				menuManager.setupDroppableAccordionElement($(this), SIDE_MENU);
+			});
+		});
+	</script>
+
+
+
+</nav><aside data-cpRole="contentContainer" id="sidebarContainer2TS">	<div id="cc518fca63-32b0-47de-b6ce-b2cb106675d7" data-containerid="518fca63-32b0-47de-b6ce-b2cb106675d7" class="pageContent cpGrid cpGrid24 showInMobile">
+				                
+
+
+
+	</div>
+</aside>
+</div>
+</div></div>
+</div><!-- GBs --><div data-cpRole="structuralContainer" id="gbsContainerTS">
+<div class="siteWrap1"><div data-cpRole="contentContainer" id="gbsTS">	<div id="cc4bbf7b34-c381-4533-bc05-9c891329670e" data-containerid="4bbf7b34-c381-4533-bc05-9c891329670e" class="pageContent cpGrid cpGrid24 isLockedContainer showInMobile" data-contentcontainerbreakpoint="33">
+				                
+
+		<div class="row outer wide"><!--
+--><div class="outer col col8 first" style="" data-widgetcontainerid="9299db41-a9d1-4fa1-a6dd-a94b6508967d">				
+	<div class="row nest first last wide">
+	
+	<div class="inner col col8 first last id1f100289-e716-4411-8235-989a3b8cbb61" style="" data-widgetcontainerid="1f100289-e716-4411-8235-989a3b8cbb61">	
+<div data-widget-id="45194305-e09d-4e98-bd32-551e3e249cd5" data-widget-controller-path="/GraphicLinks/Widget">
+
+
+
+
+<div id="graphicLinkWidget45194305-e09d-4e98-bd32-551e3e249cd5" class="widget widgetGraphicLinks skin45 widgetOptionSet44 wide" data-elementqueryclasses='{"wide-narrow":"min-width:2em"}' data-elementquerymatch='matchMultiColumn' data-elementqueryunmatch='unmatchMultiColumn' data-modulewidgettype="graphicLinks">
+	<div class="widgetHeader">
+		<div class="">
+				</div>
+	</div>
+	<div class="widgetBody cpGrid cpGrid2 ">
+		<nav class="widgetGraphicLinksNav" aria-labelledby="GraphicLinkHeaderText">
+				<div class="row   wide">
+					<!--
+--><div class="col col1 first "><ul class="semanticList"><!--
+	    --><li class="widgetItem GraphicLinks">
+
+<div>
+	<a href="/agendacenter" target="_self" class="fancyButton fancyButton50 " >
+		<span>
+			<span><span class="text">Agendas &amp; Minutes</span></span>
+		</span>
+	</a>
+</div>
+		<style scoped="scoped">.fancyButton50.fancyButton:link,.fancyButton50.fancyButton:visited, .fancyButton50div.fancyButton{
+	background-image: url('/ImageRepository/Document?documentID=81');
+	background-repeat: no-repeat;
+	background-position: center 1.5em ;
+transition:.3s ease-in-out;}
+.fancyButton50.fancyButton:hover,.fancyButton50.fancyButton:focus,.fancyButton50.fancyButton:active,.fancyButton50.fancyButton.hover{
+	background-image: url('/ImageRepository/Document?documentID=80');
+	background-repeat: no-repeat;
+	background-position: center 0em ;
+transition:.3s ease-in-out;}
+.fancyButton50.fancyButton:link > span,.fancyButton50.fancyButton:visited > span, .fancyButton50div.fancyButton > span{
+}
+.fancyButton50.fancyButton:hover > span,.fancyButton50.fancyButton:focus > span,.fancyButton50.fancyButton:active > span,.fancyButton50.fancyButton.hover > span{
+}
+.fancyButton50.fancyButton .text{
+	color: #282828;
+	font-size: 1.1em;
+	font-family: "Source Sans Pro";
+	padding-top: 6em;
+	font-weight: 600;
+	text-decoration: none;
+	padding-top: 6em;
+	background-image: url('/ImageRepository/Document?documentID=3167');
+	background-repeat: no-repeat;
+	background-position: center 2.1em ;
+transition:.3s ease-in-out;
+}
+.fancyButton50.fancyButton:hover .text,.fancyButton50.fancyButton:focus .text,.fancyButton50.fancyButton:active .text,.fancyButton50.fancyButton.hover .text{
+	text-decoration: underline;
+	background-image: url('/ImageRepository/Document?documentID=3168');
+	background-repeat: no-repeat;
+	background-position: center .77em ;
+transition:.3s ease-in-out;
+}
+</style>
+
+ </li><!--
+--></ul></div><!----><div class="col col1  last"><ul class="semanticList"><!--
+	    --><li class="widgetItem GraphicLinks">
+
+<div>
+	<a href="https://www.townofmilton.org/1025/Notifications-and-Alerts" target="_self" class="fancyButton fancyButton51 " >
+		<span>
+			<span><span class="text">Alerts</span></span>
+		</span>
+	</a>
+</div>
+		<style scoped="scoped">.fancyButton51.fancyButton:link,.fancyButton51.fancyButton:visited, .fancyButton51div.fancyButton{
+	background-image: url('/ImageRepository/Document?documentID=81');
+	background-repeat: no-repeat;
+	background-position: center 1.5em ;
+transition:.3s ease-in-out;}
+.fancyButton51.fancyButton:hover,.fancyButton51.fancyButton:focus,.fancyButton51.fancyButton:active,.fancyButton51.fancyButton.hover{
+	background-image: url('/ImageRepository/Document?documentID=80');
+	background-repeat: no-repeat;
+	background-position: center 0em ;
+transition:.3s ease-in-out;}
+.fancyButton51.fancyButton:link > span,.fancyButton51.fancyButton:visited > span, .fancyButton51div.fancyButton > span{
+}
+.fancyButton51.fancyButton:hover > span,.fancyButton51.fancyButton:focus > span,.fancyButton51.fancyButton:active > span,.fancyButton51.fancyButton.hover > span{
+}
+.fancyButton51.fancyButton .text{
+	color: #282828;
+	font-size: 1.1em;
+	font-family: "Source Sans Pro";
+	padding-top: 6em;
+	font-weight: 600;
+	text-decoration: none;
+	padding-top: 6em;
+	background-image: url('/ImageRepository/Document?documentID=70');
+	background-repeat: no-repeat;
+	background-position: center 2.2em ;
+transition:.3s ease-in-out;
+}
+.fancyButton51.fancyButton:hover .text,.fancyButton51.fancyButton:focus .text,.fancyButton51.fancyButton:active .text,.fancyButton51.fancyButton.hover .text{
+	text-decoration: underline;
+	background-image: url('/ImageRepository/Document?documentID=71');
+	background-repeat: no-repeat;
+	background-position: center .90em ;
+transition:.3s ease-in-out;
+}
+</style>
+
+ </li><!--
+--></ul></div><!--				-->
+				</div>
+			</nav>
+		</div>
+	<div class="widgetFooter">
+			</div>
+</div>
+
+</div>
+	</div> <!-- inner column -->
+
+	</div> <!-- inner row -->
+
+			</div><!-- outer column --><!----><div class="outer col col8" style="" data-widgetcontainerid="fe29caef-f8c4-4b55-a128-ff4d7fd1884d">				
+	<div class="row nest first last wide">
+	
+	<div class="inner col col8 first last id1fa194a3-9602-4131-8811-92414bee7182" style="" data-widgetcontainerid="1fa194a3-9602-4131-8811-92414bee7182">	
+<div data-widget-id="9520d969-5bfb-4d75-bde4-750d3a223262" data-widget-controller-path="/GraphicLinks/Widget">
+
+
+
+
+<div id="graphicLinkWidget9520d969-5bfb-4d75-bde4-750d3a223262" class="widget widgetGraphicLinks skin45 widgetOptionSet44 wide" data-elementqueryclasses='{"wide-narrow":"min-width:2em"}' data-elementquerymatch='matchMultiColumn' data-elementqueryunmatch='unmatchMultiColumn' data-modulewidgettype="graphicLinks">
+	<div class="widgetHeader">
+		<div class="">
+				</div>
+	</div>
+	<div class="widgetBody cpGrid cpGrid2 ">
+		<nav class="widgetGraphicLinksNav" aria-labelledby="GraphicLinkHeaderText">
+				<div class="row   wide">
+					<!--
+--><div class="col col1 first "><ul class="semanticList"><!--
+	    --><li class="widgetItem GraphicLinks">
+
+<div>
+	<a href="/900/Online-Payments" target="_self" class="fancyButton fancyButton52 " >
+		<span>
+			<span><span class="text">Bill Pay</span></span>
+		</span>
+	</a>
+</div>
+		<style scoped="scoped">.fancyButton52.fancyButton:link,.fancyButton52.fancyButton:visited, .fancyButton52div.fancyButton{
+	background-image: url('/ImageRepository/Document?documentID=81');
+	background-repeat: no-repeat;
+	background-position: center 1.5em ;
+transition:.3s ease-in-out;}
+.fancyButton52.fancyButton:hover,.fancyButton52.fancyButton:focus,.fancyButton52.fancyButton:active,.fancyButton52.fancyButton.hover{
+	background-image: url('/ImageRepository/Document?documentID=80');
+	background-repeat: no-repeat;
+	background-position: center 0em ;
+transition:.3s ease-in-out;}
+.fancyButton52.fancyButton:link > span,.fancyButton52.fancyButton:visited > span, .fancyButton52div.fancyButton > span{
+}
+.fancyButton52.fancyButton:hover > span,.fancyButton52.fancyButton:focus > span,.fancyButton52.fancyButton:active > span,.fancyButton52.fancyButton.hover > span{
+}
+.fancyButton52.fancyButton .text{
+	color: #282828;
+	font-size: 1.1em;
+	font-family: "Source Sans Pro";
+	padding-top: 6em;
+	font-weight: 600;
+	text-decoration: none;
+	padding-top: 6em;
+	background-image: url('/ImageRepository/Document?documentID=72');
+	background-repeat: no-repeat;
+	background-position: center 2.2em ;
+transition:.3s ease-in-out;
+}
+.fancyButton52.fancyButton:hover .text,.fancyButton52.fancyButton:focus .text,.fancyButton52.fancyButton:active .text,.fancyButton52.fancyButton.hover .text{
+	text-decoration: underline;
+	background-image: url('/ImageRepository/Document?documentID=73');
+	background-repeat: no-repeat;
+	background-position: center .90em ;
+transition:.3s ease-in-out;
+}
+</style>
+
+ </li><!--
+--></ul></div><!----><div class="col col1  last"><ul class="semanticList"><!--
+	    --><li class="widgetItem GraphicLinks">
+
+<div>
+	<a href="/354/Recycling" target="_self" class="fancyButton fancyButton53 " >
+		<span>
+			<span><span class="text">Trash &amp; Recycling</span></span>
+		</span>
+	</a>
+</div>
+		<style scoped="scoped">.fancyButton53.fancyButton:link,.fancyButton53.fancyButton:visited, .fancyButton53div.fancyButton{
+	background-image: url('/ImageRepository/Document?documentID=81');
+	background-repeat: no-repeat;
+	background-position: center 1.5em ;
+transition:.3s ease-in-out;}
+.fancyButton53.fancyButton:hover,.fancyButton53.fancyButton:focus,.fancyButton53.fancyButton:active,.fancyButton53.fancyButton.hover{
+	background-image: url('/ImageRepository/Document?documentID=80');
+	background-repeat: no-repeat;
+	background-position: center 0em ;
+transition:.3s ease-in-out;}
+.fancyButton53.fancyButton:link > span,.fancyButton53.fancyButton:visited > span, .fancyButton53div.fancyButton > span{
+}
+.fancyButton53.fancyButton:hover > span,.fancyButton53.fancyButton:focus > span,.fancyButton53.fancyButton:active > span,.fancyButton53.fancyButton.hover > span{
+}
+.fancyButton53.fancyButton .text{
+	color: #282828;
+	font-size: 1.1em;
+	font-family: "Source Sans Pro";
+	padding-top: 6em;
+	font-weight: 600;
+	text-decoration: none;
+	padding-top: 6em;
+	background-image: url('/ImageRepository/Document?documentID=78');
+	background-repeat: no-repeat;
+	background-position: center 2.2em ;
+transition:.3s ease-in-out;
+}
+.fancyButton53.fancyButton:hover .text,.fancyButton53.fancyButton:focus .text,.fancyButton53.fancyButton:active .text,.fancyButton53.fancyButton.hover .text{
+	text-decoration: underline;
+	background-image: url('/ImageRepository/Document?documentID=79');
+	background-repeat: no-repeat;
+	background-position: center .85em ;
+transition:.3s ease-in-out;
+}
+</style>
+
+ </li><!--
+--></ul></div><!--				-->
+				</div>
+			</nav>
+		</div>
+	<div class="widgetFooter">
+			</div>
+</div>
+
+</div>
+	</div> <!-- inner column -->
+
+	</div> <!-- inner row -->
+
+			</div><!-- outer column --><!----><div class="outer col col8 last" style="" data-widgetcontainerid="1caae7ff-c02c-4031-80dd-de31141ab73c">				
+	<div class="row nest first last wide">
+	
+	<div class="inner col col8 first last id568be906-970d-45d9-8280-c8f2bf963fb2" style="" data-widgetcontainerid="568be906-970d-45d9-8280-c8f2bf963fb2">	
+<div data-widget-id="7815430c-52d8-4c00-83ab-3ea50a437653" data-widget-controller-path="/GraphicLinks/Widget">
+
+
+
+
+<div id="graphicLinkWidget7815430c-52d8-4c00-83ab-3ea50a437653" class="widget widgetGraphicLinks skin45 widgetOptionSet44 wide" data-elementqueryclasses='{"wide-narrow":"min-width:2em"}' data-elementquerymatch='matchMultiColumn' data-elementqueryunmatch='unmatchMultiColumn' data-modulewidgettype="graphicLinks">
+	<div class="widgetHeader">
+		<div class="">
+				</div>
+	</div>
+	<div class="widgetBody cpGrid cpGrid2 ">
+		<nav class="widgetGraphicLinksNav" aria-labelledby="GraphicLinkHeaderText">
+				<div class="row   wide">
+					<!--
+--><div class="col col1 first "><ul class="semanticList"><!--
+	    --><li class="widgetItem GraphicLinks">
+
+<div>
+	<a href="/jobs.aspx" target="_self" class="fancyButton fancyButton301 " >
+		<span>
+			<span><span class="text">Employment</span></span>
+		</span>
+	</a>
+</div>
+		<style scoped="scoped">.fancyButton301.fancyButton:link,.fancyButton301.fancyButton:visited, .fancyButton301div.fancyButton{
+	background-image: url(/ImageRepository/Document?documentID=81);
+	background-repeat: no-repeat;
+	background-position: center 1.5em ;
+transition:.3s ease-in-out;}
+.fancyButton301.fancyButton:hover,.fancyButton301.fancyButton:focus,.fancyButton301.fancyButton:active,.fancyButton301.fancyButton.hover{
+	background-image: url(/ImageRepository/Document?documentID=80);
+	background-repeat: no-repeat;
+	background-position: center 0em ;
+transition:.3s ease-in-out;}
+.fancyButton301.fancyButton:link > span,.fancyButton301.fancyButton:visited > span, .fancyButton301div.fancyButton > span{
+}
+.fancyButton301.fancyButton:hover > span,.fancyButton301.fancyButton:focus > span,.fancyButton301.fancyButton:active > span,.fancyButton301.fancyButton.hover > span{
+}
+.fancyButton301.fancyButton .text{
+	color: #282828;
+	font-size: 1.1em;
+	font-family: "Source Sans Pro";
+	padding-top: 6em;
+	font-weight: 600;
+	text-decoration: none;
+	padding-top: 6em;
+	background-image: url(/ImageRepository/Document?documentID=74);
+	background-repeat: no-repeat;
+	background-position: center 2.2em ;
+transition:.3s ease-in-out;
+}
+.fancyButton301.fancyButton:hover .text,.fancyButton301.fancyButton:focus .text,.fancyButton301.fancyButton:active .text,.fancyButton301.fancyButton.hover .text{
+	text-decoration: underline;
+	background-image: url(/ImageRepository/Document?documentID=75);
+	background-repeat: no-repeat;
+	background-position: center .90em ;
+transition:.3s ease-in-out;
+}
+</style>
+
+ </li><!--
+--></ul></div><!----><div class="col col1  last"><ul class="semanticList"><!--
+	    --><li class="widgetItem GraphicLinks">
+
+<div>
+	<a href="/calendar.aspx" target="_self" class="fancyButton fancyButton55 " >
+		<span>
+			<span><span class="text">Meetings Calendar</span></span>
+		</span>
+	</a>
+</div>
+		<style scoped="scoped">.fancyButton55.fancyButton:link,.fancyButton55.fancyButton:visited, .fancyButton55div.fancyButton{
+	background-image: url('/ImageRepository/Document?documentID=81');
+	background-repeat: no-repeat;
+	background-position: center 1.5em ;
+transition:.3s ease-in-out;}
+.fancyButton55.fancyButton:hover,.fancyButton55.fancyButton:focus,.fancyButton55.fancyButton:active,.fancyButton55.fancyButton.hover{
+	background-image: url('/ImageRepository/Document?documentID=80');
+	background-repeat: no-repeat;
+	background-position: center 0em ;
+transition:.3s ease-in-out;}
+.fancyButton55.fancyButton:link > span,.fancyButton55.fancyButton:visited > span, .fancyButton55div.fancyButton > span{
+}
+.fancyButton55.fancyButton:hover > span,.fancyButton55.fancyButton:focus > span,.fancyButton55.fancyButton:active > span,.fancyButton55.fancyButton.hover > span{
+}
+.fancyButton55.fancyButton .text{
+	color: #282828;
+	font-size: 1.1em;
+	font-family: "Source Sans Pro";
+	padding-top: 6em;
+	font-weight: 600;
+	text-decoration: none;
+	padding-top: 6em;
+	background-image: url('/ImageRepository/Document?documentID=68');
+	background-repeat: no-repeat;
+	background-position: center 2.2em ;
+transition:.3s ease-in-out;
+}
+.fancyButton55.fancyButton:hover .text,.fancyButton55.fancyButton:focus .text,.fancyButton55.fancyButton:active .text,.fancyButton55.fancyButton.hover .text{
+	text-decoration: underline;
+	background-image: url('/ImageRepository/Document?documentID=69');
+	background-repeat: no-repeat;
+	background-position: center .90em ;
+transition:.3s ease-in-out;
+}
+</style>
+
+ </li><!--
+--></ul></div><!--				-->
+				</div>
+			</nav>
+		</div>
+	<div class="widgetFooter">
+			</div>
+</div>
+
+</div>
+	</div> <!-- inner column -->
+
+	</div> <!-- inner row -->
+
+			</div><!-- outer column --><!--		--></div> <!-- outer row -->
+
+
+	</div>
+</div></div>
+</div><!-- Calendar/Carousel --><!-- <div data-cpRole="structuralContainer" id="homeContainer1">
+    <div class="siteWrap1">
+      <div data-cpRole="contentContainer" id="homeContent1a"></div>
+    </div>
+  </div> --><!-- Footer --><footer data-cpRole="structuralContainer" id="footerContainerTS">
+<div class="siteWrap1"><div data-cpRole="contentContainer" id="footerTS">	<div id="cc44e45009-155a-4b6b-979a-8c10745b727e" data-containerid="44e45009-155a-4b6b-979a-8c10745b727e" class="pageContent cpGrid cpGrid24 isLockedContainer showInMobile" data-contentcontainerbreakpoint="45">
+				                
+
+		<div class="row outer wide"><!--
+--><div class="outer col col4 first" style="" data-widgetcontainerid="3430ceea-439a-4869-bbea-1e01bed3db66">				
+	<div class="row nest first wide">
+	
+	<div class="inner col col4 first last id1045e8ea-4dee-4b45-a68a-8c2cdf791aa4" style="" data-widgetcontainerid="1045e8ea-4dee-4b45-a68a-8c2cdf791aa4">	
+    <div data-widget-id="ecfb4c7f-eff7-4ba0-85ea-0e9847fd4b87" data-widget-controller-path="/InfoAdvanced/Widget">
+
+
+
+
+
+	<section id="divInfoAdvecfb4c7f-eff7-4ba0-85ea-0e9847fd4b87" class="widget widgetInfoAdvanced skin39 widgetOptionSet5 wide" data-modulewidgettype="infoAdv" data-elementqueryclasses='{"wide-narrow":"min-width:25em"}' data-elementquerymatch='matchMultiColumn' data-elementqueryunmatch='unmatchMultiColumn' aria-label="Info Advanced">
+			<header class="widgetHeader" id="headerecfb4c7f-eff7-4ba0-85ea-0e9847fd4b87">
+		<div class="">
+								</div>
+	</header>
+	<div class="widgetBody  cpGrid cpGrid1 ">
+		<div class="row  wide">
+					<div class="col col1 first last">
+						<ol class="pageStyles semanticList">
+
+<li class="InfoAdvanced widgetItem fr-view">
+	<p><a href="/"><img src="/ImageRepository/Document?documentId=2732" class="fr-dib" alt="Home Page"></a></p><p><br></p>
+</li>						</ol>
+					</div>
+		</div>
+	</div>
+	<div class="widgetFooter">
+
+	</div>
+
+	</section>
+
+
+
+<script type="text/javascript">
+	//Render slideshow if info advacned items contain one.
+	$(document).ready(function (e) {
+		$('#divInfoAdvecfb4c7f-eff7-4ba0-85ea-0e9847fd4b87 .InfoAdvanced.widgetItem').each(function () {
+			renderSlideshowIfApplicable($(this));		
+		});
+	});
+</script></div>	</div> <!-- inner column -->
+
+	</div> <!-- inner row -->
+	<div class="row nest last wide">
+	
+	<div class="inner col col4 first last id157b005a-d80b-4b61-bd46-4d8b00a2c1fa" style="" data-widgetcontainerid="157b005a-d80b-4b61-bd46-4d8b00a2c1fa">	
+<div data-widget-id="252c3b77-2e38-49cf-9829-d14414304604" data-widget-controller-path="/GraphicLinks/Widget">
+
+
+
+
+<div id="graphicLinkWidget252c3b77-2e38-49cf-9829-d14414304604" class="widget widgetGraphicLinks skin55 widgetOptionSet38 wide" data-elementqueryclasses='{"wide-narrow":"min-width:2em"}' data-elementquerymatch='matchMultiColumn' data-elementqueryunmatch='unmatchMultiColumn' data-modulewidgettype="graphicLinks">
+	<div class="widgetHeader">
+		<div class="">
+				</div>
+	</div>
+	<div class="widgetBody cpGrid cpGrid4 ">
+		<nav class="widgetGraphicLinksNav" aria-labelledby="GraphicLinkHeaderText">
+				<div class="row   wide">
+					<!--
+--><div class="col col1 first "><ul class="semanticList"><!--
+	    --><li class="widgetItem GraphicLinks"><a class="widgetDesc widgetGraphicLinksLink" href="https://www.facebook.com/miltondpw" target="_self"  aria-label=" Facebook graphic"><img src="/ImageRepository/Document?documentID=48" 
+     class="graphicButtonLink" alt=" Facebook" 
+     onmouseover="this.src='/ImageRepository/Document?documentID=48'" 
+	onmouseout="this.src='/ImageRepository/Document?documentID=48'"
+     onfocus="this.src='/ImageRepository/Document?documentID=48'" 
+	onblur="this.src='/ImageRepository/Document?documentID=48'"> </a></li><!--
+--></ul></div><!----><div class="col col1  "><ul class="semanticList"><!--
+	    --><li class="widgetItem GraphicLinks"><a class="widgetDesc widgetGraphicLinksLink" href="/twitter" target="_self"  aria-label=" Twitter graphic"><img src="/ImageRepository/Document?documentID=50" 
+     class="graphicButtonLink" alt=" Twitter" 
+     onmouseover="this.src='/ImageRepository/Document?documentID=50'" 
+	onmouseout="this.src='/ImageRepository/Document?documentID=50'"
+     onfocus="this.src='/ImageRepository/Document?documentID=50'" 
+	onblur="this.src='/ImageRepository/Document?documentID=50'"> </a></li><!--
+--></ul></div><!----><div class="col col1  "><ul class="semanticList"><!--
+	    --><li class="widgetItem GraphicLinks"><a class="widgetDesc widgetGraphicLinksLink" href="/instagram" target="_self"  aria-label=" Instagram graphic"><img src="/ImageRepository/Document?documentID=49" 
+     class="graphicButtonLink" alt=" Instagram" 
+     onmouseover="this.src='/ImageRepository/Document?documentID=49'" 
+	onmouseout="this.src='/ImageRepository/Document?documentID=49'"
+     onfocus="this.src='/ImageRepository/Document?documentID=49'" 
+	onblur="this.src='/ImageRepository/Document?documentID=49'"> </a></li><!--
+--></ul></div><!----><div class="col col1  last"><ul class="semanticList"><!--
+	    --><li class="widgetItem GraphicLinks"><a class="widgetDesc widgetGraphicLinksLink" href="/youtube" target="_self"  aria-label=" YouTube graphic"><img src="/ImageRepository/Document?documentID=51" 
+     class="graphicButtonLink" alt=" YouTube" 
+     onmouseover="this.src='/ImageRepository/Document?documentID=51'" 
+	onmouseout="this.src='/ImageRepository/Document?documentID=51'"
+     onfocus="this.src='/ImageRepository/Document?documentID=51'" 
+	onblur="this.src='/ImageRepository/Document?documentID=51'"> </a></li><!--
+--></ul></div><!--				-->
+				</div>
+			</nav>
+		</div>
+	<div class="widgetFooter">
+			</div>
+</div>
+
+</div>
+	</div> <!-- inner column -->
+
+	</div> <!-- inner row -->
+
+			</div><!-- outer column --><!----><div class="outer col col1" style="" data-widgetcontainerid="e416deba-2d2b-4da7-946a-81af12dbaecb">				
+	<div class="row nest first last wide">
+	
+	<div class="inner col col1 first last id9b6dde8b-dbf3-4497-92a4-cf497f5f42ce" style="" data-widgetcontainerid="9b6dde8b-dbf3-4497-92a4-cf497f5f42ce">	
+
+<div class="widget widgetSpacer" id="4017fd37-6bb5-4613-aeda-f3bdc7379645"></div>	</div> <!-- inner column -->
+
+	</div> <!-- inner row -->
+
+			</div><!-- outer column --><!----><div class="outer col col6" style="" data-widgetcontainerid="58008b18-aaf1-46df-94f8-cb52f1abf27a">				
+	<div class="row nest first last wide">
+	
+	<div class="inner col col6 first last id3b518fae-2323-404a-bdb2-06223f15a328" style="" data-widgetcontainerid="3b518fae-2323-404a-bdb2-06223f15a328">	
+    <div data-widget-id="607dfc3e-d1ff-490c-9a71-339b01482810" data-widget-controller-path="/InfoAdvanced/Widget">
+
+
+
+
+
+	<section id="divInfoAdv607dfc3e-d1ff-490c-9a71-339b01482810" class="widget widgetInfoAdvanced skin37 widgetOptionSet5 wide" data-modulewidgettype="infoAdv" data-elementqueryclasses='{"wide-narrow":"min-width:25em"}' data-elementquerymatch='matchMultiColumn' data-elementqueryunmatch='unmatchMultiColumn' aria-labelledby="header607dfc3e-d1ff-490c-9a71-339b01482810">
+			<header class="widgetHeader" id="header607dfc3e-d1ff-490c-9a71-339b01482810">
+		<div class="">
+					<h3 >Contact Us</h3>
+								</div>
+	</header>
+	<div class="widgetBody  cpGrid cpGrid1 ">
+		<div class="row  wide">
+					<div class="col col1 first last">
+						<ol class="pageStyles semanticList">
+
+<li class="InfoAdvanced widgetItem fr-view">
+	<p>Town of Milton Massachusetts&nbsp;<br>525 Canton Avenue<br>Milton MA 02186<br>Phone: <a href="tel:617-898-4800">617-898-4800</a></p><p>Town Hall Hours:<br>Monday to Thursday&nbsp;<br>8 am to 5 pm<br>Friday<br>8 am to 1:30 pm</p>
+</li>						</ol>
+					</div>
+		</div>
+	</div>
+	<div class="widgetFooter">
+
+	</div>
+
+	</section>
+
+
+
+<script type="text/javascript">
+	//Render slideshow if info advacned items contain one.
+	$(document).ready(function (e) {
+		$('#divInfoAdv607dfc3e-d1ff-490c-9a71-339b01482810 .InfoAdvanced.widgetItem').each(function () {
+			renderSlideshowIfApplicable($(this));		
+		});
+	});
+</script></div>	</div> <!-- inner column -->
+
+	</div> <!-- inner row -->
+
+			</div><!-- outer column --><!----><div class="outer col col6" style="" data-widgetcontainerid="82501b7d-98eb-4c53-a8c1-7adedcd8fab7">				
+	<div class="row nest first last wide">
+	
+	<div class="inner col col6 first last idd8794c5a-8ac2-49a2-9853-c94341a3077c" style="" data-widgetcontainerid="d8794c5a-8ac2-49a2-9853-c94341a3077c">	
+	<div data-widget-id="8e7eef07-6640-49c9-a989-1df002c82aee" data-widget-controller-path="/QuickLinks/Widget">
+
+
+
+
+
+
+
+
+	<section id="widgetQuicklink8e7eef07-6640-49c9-a989-1df002c82aee" class="widget widgetQuickLinks skin37 widgetOptionSet36 narrow" data-modulewidgettype="quickLinks" data-elementqueryclasses='{"wide-narrow":"min-width:25em"}' data-elementquerymatch='matchMultiColumn' data-elementqueryunmatch='unmatchMultiColumn' aria-labelledby="quickLinksHeader8e7eef07-6640-49c9-a989-1df002c82aee">
+			<header class="widgetHeader" id="quickLinksHeader8e7eef07-6640-49c9-a989-1df002c82aee">
+		<div class="">
+					<h3><a  style="" href="/QuickLinks.aspx?CID=15" >Helpful Links</a></h3>
+						</div>
+	</header>
+	<div class="widgetBody cpGrid cpGrid1 ">
+        <div class="row  narrow">
+				<div class="col col1 first last">
+					<ol class="semanticList">
+
+    <li style="position:relative" class="widgetItem QuickLinks">
+        <a class="widgetDesc widgetQuickLinksLink" href="/248/Airplane-Noise" target="_self" >Airplane Noise</a>
+        <div class="widgetMeta"></div>
+    </li>
+
+    <li style="position:relative" class="widgetItem QuickLinks">
+        <a class="widgetDesc widgetQuickLinksLink" href="https://milton.patriotproperties.com/default.asp?br=exp&amp;vr=6" target="_self" >Assessors Database</a>
+        <div class="widgetMeta"></div>
+    </li>
+
+    <li style="position:relative" class="widgetItem QuickLinks">
+        <a class="widgetDesc widgetQuickLinksLink" href="https://www.mapsonline.net/miltonma/miltonofficialmapper.html" target="_self" >GIS Online Mapper</a>
+        <div class="widgetMeta"></div>
+    </li>
+
+    <li style="position:relative" class="widgetItem QuickLinks">
+        <a class="widgetDesc widgetQuickLinksLink" href="https://miltonaccesstv.org/" target="_self" >Milton Access TV</a>
+        <div class="widgetMeta"></div>
+    </li>
+
+    <li style="position:relative" class="widgetItem QuickLinks">
+        <a class="widgetDesc widgetQuickLinksLink" href="https://permiteyes.us/milton/loginuser.php" target="_self" >Online Building Permit Applications</a>
+        <div class="widgetMeta"></div>
+    </li>
+					</ol>
+				</div>
+		</div>
+        
+	</div>
+	<div class="widgetFooter">
+	</div>
+	<div class="addItemModal hidden">
+		<div class="url hidden">/QuickLinks.aspx</div>
+	</div>
+
+	</section>
+</div>
+	</div> <!-- inner column -->
+
+	</div> <!-- inner row -->
+
+			</div><!-- outer column --><!----><div class="outer col col7 last" style="" data-widgetcontainerid="d5f80f94-8e58-49ef-8a8c-edfe17aed366">				
+	<div class="row nest first last wide">
+	
+	<div class="inner col col7 first last idc09e88f3-40f3-4d69-8573-50581a26c969" style="" data-widgetcontainerid="c09e88f3-40f3-4d69-8573-50581a26c969">	
+	<div data-widget-id="4573b988-b014-414a-af26-082a6beecaa4" data-widget-controller-path="/QuickLinks/Widget">
+
+
+
+
+
+
+
+
+	<section id="widgetQuicklink4573b988-b014-414a-af26-082a6beecaa4" class="widget widgetQuickLinks skin37 widgetOptionSet36 narrow" data-modulewidgettype="quickLinks" data-elementqueryclasses='{"wide-narrow":"min-width:25em"}' data-elementquerymatch='matchMultiColumn' data-elementqueryunmatch='unmatchMultiColumn' aria-labelledby="quickLinksHeader4573b988-b014-414a-af26-082a6beecaa4">
+			<header class="widgetHeader" id="quickLinksHeader4573b988-b014-414a-af26-082a6beecaa4">
+		<div class="">
+					<h3><a  style="" href="/QuickLinks.aspx?CID=16" >Site Links</a></h3>
+						</div>
+	</header>
+	<div class="widgetBody cpGrid cpGrid1 ">
+        <div class="row  narrow">
+				<div class="col col1 first last">
+					<ol class="semanticList">
+
+    <li style="position:relative" class="widgetItem QuickLinks">
+        <a class="widgetDesc widgetQuickLinksLink" href="/" target="_self" >Home</a>
+        <div class="widgetMeta"></div>
+    </li>
+
+    <li style="position:relative" class="widgetItem QuickLinks">
+        <a class="widgetDesc widgetQuickLinksLink" href="/sitemap" target="_self" >Site Map</a>
+        <div class="widgetMeta"></div>
+    </li>
+
+    <li style="position:relative" class="widgetItem QuickLinks">
+        <a class="widgetDesc widgetQuickLinksLink" href="/directory.aspx" target="_self" >Contact Us</a>
+        <div class="widgetMeta"></div>
+    </li>
+
+    <li style="position:relative" class="widgetItem QuickLinks">
+        <a class="widgetDesc widgetQuickLinksLink" href="/accessibility" target="_self" >Accessibility</a>
+        <div class="widgetMeta"></div>
+    </li>
+
+    <li style="position:relative" class="widgetItem QuickLinks">
+        <a class="widgetDesc widgetQuickLinksLink" href="/copyright" target="_self" >Copyright Notices</a>
+        <div class="widgetMeta"></div>
+    </li>
+
+    <li style="position:relative" class="widgetItem QuickLinks">
+        <a class="widgetDesc widgetQuickLinksLink" href="/privacy" target="_self" >Privacy Policy</a>
+        <div class="widgetMeta"></div>
+    </li>
+					</ol>
+				</div>
+		</div>
+        
+	</div>
+	<div class="widgetFooter">
+	</div>
+	<div class="addItemModal hidden">
+		<div class="url hidden">/QuickLinks.aspx</div>
+	</div>
+
+	</section>
+</div>
+	</div> <!-- inner column -->
+
+	</div> <!-- inner row -->
+
+			</div><!-- outer column --><!--		--></div> <!-- outer row -->
+
+
+	</div>
+</div></div>
+</footer><!-- Powered By --><div data-cpRole="structuralContainer" id="poweredByContainerTS">
+<div class="siteWrap"><div data-cpRole="contentContainer" id="poweredByTS">	<div id="ccb428ad81-f9e6-4193-a007-ef395ad6a74e" data-containerid="b428ad81-f9e6-4193-a007-ef395ad6a74e" class="pageContent cpGrid cpGrid24 isLockedContainer showInMobile">
+				                
+
+		<div class="row outer wide"><!--
+--><div class="outer col col24 first last" style="" data-widgetcontainerid="fe4f2e3f-1f91-4268-b3b6-ed24aa1c5889">				
+	<div class="row nest first last wide">
+	
+	<div class="inner col col24 first last id7824b5e3-80c4-4ab3-9f24-20c049facc7e" style="" data-widgetcontainerid="7824b5e3-80c4-4ab3-9f24-20c049facc7e">	
+ 
+	<div data-widget-id='e7b97f25-51f6-4053-9e41-b771d861f139' data-moduleName="customHtml" id='widgetCustomHtmle7b97f25-51f6-4053-9e41-b771d861f139' class="widget widgetCustomHtml skin39 narrow" >
+	<div class="widgetBody pageStyles" id="widgetBodye7b97f25-51f6-4053-9e41-b771d861f139">
+		<div id="customHtmle7b97f25-51f6-4053-9e41-b771d861f139"><div><style>
+  /* CP icon */
+  .cpBylineIconTS {
+    color: #fff;
+  }
+  /* CP Text */
+  .cpBylineTextTS,
+  .cpBylineTextTS a:link {
+    color: #fff;
+  }
+
+  .cpBylineTS {
+    text-align: center;
+  }
+  
+  .cpBylineIconTS {
+    fill: currentColor;
+    width: 39px;
+    height: 26px;
+    display: inline;
+    vertical-align: middle;
+  }
+</style>
+
+<div class="widgetItem cpBylineTS">
+  <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 100 100" class="cpBylineIconTS">
+    <path class="c" d="M73.4,23.2h-19v16.7h19c2.8,0,5,2.2,5,5c0,2.8-2.2,5-5,5h-19v28.4h5.5l11.3-11.7h2.2c11.9,0,21.6-9.7,21.6-21.6C95,33,85.3,23.2,73.4,23.2"></path>
+    <path class="p" d="M45.8,66.5H26.6C14.7,66.5,5,56.8,5,44.9C5,33,14.7,23.2,26.6,23.2h19.1v16.7H26.6c-2.8,0-5,2.2-5,5c0,2.8,2.2,5,5,5h19.1V66.5z"></path>
+  </svg>
+  <span class="cpBylineTextTS">Government Websites by <a href="https://connect.civicplus.com/referral">CivicPlus&reg;</a></span>
+</div>
+</div></div>
+	</div>
+	</div>
+	</div> <!-- inner column -->
+
+	</div> <!-- inner row -->
+
+			</div><!-- outer column --><!--		--></div> <!-- outer row -->
+
+
+	</div>
+</div></div>
+</div>
+</div>
+
+            </div>
+        </div>
+    </div>
+
+<link href="/745732998.css" rel="stylesheet" type="text/css" />
+
+<div id="SplashMessageWrapper" class="cp-Splash-wrapper">
+	<div role="dialog" aria-labelledby="cp-Splash-title" aria-describedby="editorContentDesc" aria-modal="true" tabindex="-1" id="SplashMessage" class="hidden cp-Splash cp-Splash--modal is-open">
+		<div class="cp-Splash-header">
+			<h2 class="cp-Splash-title" id="cp-Splash-title">Loading</h2>
+			<button class="cp-Splash-Btn cp-Splash-close" aria-label="Close this modal" title="Close this window">
+				<svg id="iconClose" viewBox="0 0 25 25">
+					<polygon style="fill:currentcolor"
+							 points="18.806,6.98 18.075,6.248 12.532,11.792 6.989,6.248 6.257,6.98 11.786,12.508 6.212,18.084 6.943,18.815 12.532,13.224 18.12,18.815 18.851,18.084 13.277,12.508"></polygon>
+				</svg>
+			</button>
+		</div>
+		<div class="cp-Splash-body">
+			<div class="cp-Splash-Prose editorContent fr-view" id="editorContentDesc">
+				<!-- Content from the Froala Editor will go here. -->
+				Loading
+			</div>
+		</div>
+		<div class="cp-Splash-footer">
+			<button class="cp-Splash-Btn cp-Splash-Btn--NoShow">Do Not Show Again</button>
+			<button class="cp-Splash-Btn cp-Splash-Btn--Close">Close</button>
+		</div>
+	</div>
+</div>
+
+<script src="/Assets/Scripts/APIClient.js"></script>
+<script src="/Assets/Mystique/Shared/Scripts/Moment/Moment.min.js"></script>
+<script src="/Assets/Scripts/SplashModal/SplashModalRender.js"></script>
+<script>
+
+		$(document).ready(function () {
+			var filter = {
+				targetId: '890',
+				targetType: 1
+			}
+
+			new SplashModalRender().triggerRender(filter);
+		});
+</script>
+
+
+	
+	
+	
+	
+
+
+
+	
+
+
+
+
+
+
+    <script src="/-978663714.js" type="text/javascript"></script>
+    <!----------Google Translate (Mobile Friendly)--------->
+
+
+
+<style>#google-translate-container {float: right;padding: 3px 5px 0px 0px;}.goog-te-combo,.goog-te-banner *,.goog-te-ftab *,.goog-te-menu *,.goog-te-menu2 *,.goog-te-balloon * {font-family: arial;font-size: 10pt;background-image: url("https://theme.zdassets.com/theme_assets/958586/bae8aa24db8d43595871692a9d259186f2db3fb4.png");background-position: 3px 4px;background-size: 22px;background-repeat: no-repeat;text-indent: 20px;background-color: #fff;color: #000 !important;}.goog-logo-link {display: none !important;}.goog-te-gadget {color: transparent !important;}.goog-te-gadget .goog-te-combo {margin: 2px 0 !important;border-radius: 15px !important;}.goog-te-combo{border: 1px solid !important;border-color: #bcc9d7 #96a3b1 #96a3b1 #bcc9d7 !important;border-radius: 0 !important;height:32px; !important;padding: 0 1px 0 .25rem !important;}
+
+#launcher-wrapper {bottom: 50px !important;}
+
+</style>
+
+<div id="google-translate-container">
+
+<div id="google_translate_element" style="position: fixed; bottom: 0px; right: 20px; z-index: 5;"></div>
+
+</div>
+
+<script>
+
+function googleTranslateElementInit() {
+var el = document.getElementById("google_translate_element");
+if (el && el.innerHTML.trim() !== "") {
+    return;
+}
+
+
+new google.translate.TranslateElement({ pageLanguage: "en" }, "google_translate_element");
+
+// begin accessibility compliance
+
+$('img.goog-te-gadget-icon').attr('alt','Google Translate');
+
+$('div#goog-gt-tt div.logo img').attr('alt','translate');
+
+$('div#goog-gt-tt .original-text').css('text-align','left');
+
+$('.goog-te-gadget-simple .goog-te-menu-value span').css('color','#000000');
+
+$('.goog-te-combo').attr('aria-label','google translate languages');
+
+$('svg.goog-te-spinner').attr('title','Google Translate Spinner');
+
+$('.goog-te-gadget-simple .goog-te-menu-value span').css('color','#000000');
+
+}
+
+$(function() {
+
+$.getScript("//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit");
+
+});
+
+</script>
+
+
+
+<!--------------End Google Translate----------------->
+
+
+    <script type="text/javascript">
+        $(function () {
+            document.cookie = "responsiveGhost=0; path=/";
+        });
+        $(window).on("load", function () {
+            $('body').addClass('doneLoading').removeClass('hideContent');
+
+            if ($('#404Content').length > 0)
+                $('div#bodyWrapper').css('padding', '0px');
+        });
+    </script>
+
+    <noscript>
+        <style>
+            body.hideContent {
+                opacity: 1 !important;
+            }
+        </style>
+    </noscript>
+
+        
+<div style="display: none;">
+	<svg xmlns="http://www.w3.org/2000/svg" style="display:none;">
+
+		<symbol id="iconArrow--left" viewbox="0 0 25 25">
+			<title>Arrow Left</title>
+			<polygon style="fill:currentcolor" points="18.044,25 19.498,23.545 8.409,12.454 19.408,1.455 17.954,0 5.502,12.452"></polygon>
+		</symbol>
+
+		<symbol id="iconArrow--right" viewbox="0 0 25 25">
+			<title>Arrow Right</title>
+			<polygon style="fill:currentcolor" points="6.957,0 5.502,1.455 16.591,12.546 5.592,23.545 7.047,25 19.498,12.548"></polygon>
+		</symbol>
+
+	</svg>
+</div>
+    <script type="text/javascript">loadCSS('//fonts.googleapis.com/css?family=Merriweather:700,700italic,900,900italic,italic,regular|Open+Sans:500,500italic,600,600italic,700,700italic,800,800italic,italic,regular|Source+Sans+Pro:600,600italic,700,700italic,900,900italic,italic,regular|');</script>
+    
+
+    <div class="hidden activeWidgetSkinComponentsOnPageJson">[]</div>
+        <div style="display: none;">
+            <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                <symbol id="iconSlideshowArrowLeft" viewBox="0 0 22.68 40">
+                    <title>Slideshow Left Arrow</title>
+                    <g>
+                        <path style="fill:currentcolor;" d="M20,40a2.67,2.67,0,0,1-1.9-.79L.79,21.9a2.68,2.68,0,0,1,0-3.79L18.1.79a2.68,2.68,0,1,1,3.79,3.79L6.47,20,21.89,35.42A2.68,2.68,0,0,1,20,40Z"></path>
+                    </g>
+                </symbol>
+                <symbol id="iconSlideshowArrowRight" viewBox="0 0 22.68 40">
+                    <title>Slideshow Right Arrow</title>
+                    <g>
+                        <path style="fill:currentcolor;" d="M2.68,0a2.67,2.67,0,0,1,1.9.79L21.89,18.1a2.68,2.68,0,0,1,0,3.79L4.58,39.21A2.68,2.68,0,0,1,.79,35.42L16.21,20,.79,4.58A2.68,2.68,0,0,1,2.68,0Z"></path>
+                    </g>
+                </symbol>
+            </svg>
+        </div>
+    
+	
+
+    <div id="root-picker-outlet"></div>
+</body>
+</html>

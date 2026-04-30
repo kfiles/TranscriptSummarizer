@@ -63,6 +63,13 @@ gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
   --role="roles/pubsub.publisher" \
   --condition=None
 
+# Allow the function SA to write Cloud Build logs to Cloud Logging.
+# Required because this SA is the build runner for the hugo-build-and-deploy trigger.
+gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
+  --member="serviceAccount:${SA_EMAIL}" \
+  --role="roles/logging.logWriter" \
+  --condition=None
+
 # Allow the function SA to read/write the meetingtranscripts Firestore database
 # (MongoDB compatibility mode). Condition scopes access to that database only.
 gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
@@ -80,6 +87,10 @@ gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
   --role="roles/firebasehosting.admin" \
   --condition=None
 gcloud secrets add-iam-policy-binding "firebase-ci-token" \
+  --member="serviceAccount:${CLOUDBUILD_SA}" \
+  --role="roles/secretmanager.secretAccessor" \
+  --project="${PROJECT_ID}"
+gcloud secrets add-iam-policy-binding "mongodb-uri" \
   --member="serviceAccount:${CLOUDBUILD_SA}" \
   --role="roles/secretmanager.secretAccessor" \
   --project="${PROJECT_ID}"
@@ -119,10 +130,11 @@ create_secret "openai-api-key"        "OpenAI API key (CHATGPT_API_KEY)"
 create_secret "facebook-page-id"      "Facebook Page ID"
 create_secret "facebook-page-token"   "Facebook Page access token"
 create_secret "youtube-api-key"       "YouTube Data API key (public-data API key, no OAuth)"
+create_secret "supadata-api-key"      "Supadata API key (transcript provider)"
 create_secret "firebase-ci-token"     "Firebase CI token (from: firebase login:ci)"
 
 # Grant the function SA accessor rights on each secret it needs at runtime.
-for SECRET in mongodb-uri openai-api-key facebook-page-id facebook-page-token youtube-api-key; do
+for SECRET in mongodb-uri openai-api-key facebook-page-id facebook-page-token youtube-api-key supadata-api-key; do
   grant_secret_access "${SECRET}"
 done
 # firebase-ci-token is used by Cloud Build SA, not the function SA — handled below.
@@ -170,7 +182,8 @@ MONGODB_URI=mongodb-uri:latest,\
 CHATGPT_API_KEY=openai-api-key:latest,\
 FACEBOOK_PAGE_ID=facebook-page-id:latest,\
 FACEBOOK_PAGE_TOKEN=facebook-page-token:latest,\
-YOUTUBE_API_KEY=youtube-api-key:latest" \
+YOUTUBE_API_KEY=youtube-api-key:latest,\
+SUPADATA_API_KEY=supadata-api-key:latest" \
   --project="${PROJECT_ID}"
 
 # ── Subscribe to YouTube PubSubHubbub ─────────────────────────────────────────

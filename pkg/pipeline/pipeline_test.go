@@ -3,8 +3,6 @@ package pipeline
 import (
 	"context"
 	"errors"
-	"net/http"
-	"net/http/httptest"
 	"os"
 	"path"
 	"strings"
@@ -84,13 +82,36 @@ func (m *mockFacade) DeleteTranscript(ctx context.Context, c *mongo.Client, id s
 	return nil
 }
 
-// captionServer starts a test HTTP server that returns a minimal YouTube caption XML.
-func captionServer(t *testing.T, body string) *httptest.Server {
+// fakeTranscriber returns canned text/lang/err. It records the videoID it was called with.
+type fakeTranscriber struct {
+	text       string
+	lang       string
+	err        error
+	calledWith string
+}
+
+func (f *fakeTranscriber) Transcribe(_ context.Context, videoID string) (string, string, error) {
+	f.calledWith = videoID
+	return f.text, f.lang, f.err
+}
+
+// useTranscriber installs ft as the transcriber returned by newTranscriber for
+// the duration of a test, and restores the original on cleanup.
+func useTranscriber(t *testing.T, ft *fakeTranscriber) {
 	t.Helper()
-	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "text/xml")
-		w.Write([]byte(body)) //nolint:errcheck
-	}))
+	orig := newTranscriber
+	t.Cleanup(func() { newTranscriber = orig })
+	newTranscriber = func() transcript.VideoTranscriber { return ft }
+}
+
+// useListNames stubs the listNames seam to return the given names (and no
+// error) for the duration of the test. Call this in any test that reaches the
+// listNames call site (i.e. transcription succeeds) to avoid a nil-client panic.
+func useListNames(t *testing.T, names []string) {
+	t.Helper()
+	orig := listNames
+	t.Cleanup(func() { listNames = orig })
+	listNames = func(_ context.Context, _ *mongo.Client) ([]string, error) { return names, nil }
 }
 
 func testVideo() *transcript.Video {
@@ -144,13 +165,9 @@ func TestWriteMarkdown(t *testing.T) {
 	}
 }
 
-// TestRun_FetchCaptionsError covers the case where listing captions fails.
-func TestRun_FetchCaptionsError(t *testing.T) {
-	origLC := listCaptions
-	defer func() { listCaptions = origLC }()
-	listCaptions = func(string) ([]transcript.Caption, error) {
-		return nil, errors.New("network error")
-	}
+// TestRun_TranscribeError covers the case where transcription fails.
+func TestRun_TranscribeError(t *testing.T) {
+	useTranscriber(t, &fakeTranscriber{err: errors.New("network error")})
 
 	facade := &mockFacade{}
 	err := Run(context.Background(), facade, nil, testVideo())
@@ -159,28 +176,20 @@ func TestRun_FetchCaptionsError(t *testing.T) {
 	}
 }
 
-// TestRun_NoCaptions covers the case where a video has no caption tracks.
-func TestRun_NoCaptions(t *testing.T) {
-	origLC := listCaptions
-	defer func() { listCaptions = origLC }()
-	listCaptions = func(string) ([]transcript.Caption, error) {
-		return []transcript.Caption{}, nil
-	}
+// TestRun_EmptyTranscript covers the case where the transcriber returns no text.
+func TestRun_EmptyTranscript(t *testing.T) {
+	useTranscriber(t, &fakeTranscriber{text: "", lang: "en"})
 
 	facade := &mockFacade{}
 	err := Run(context.Background(), facade, nil, testVideo())
 	if err == nil {
-		t.Fatal("expected error, got nil")
+		t.Fatal("expected error for empty transcript, got nil")
 	}
 }
 
 // TestRun_InsertVideoError covers the case where inserting a new video fails.
 func TestRun_InsertVideoError(t *testing.T) {
-	origLC := listCaptions
-	defer func() { listCaptions = origLC }()
-	listCaptions = func(string) ([]transcript.Caption, error) {
-		return []transcript.Caption{{LanguageCode: "en", BaseUrl: "http://unused"}}, nil
-	}
+	useTranscriber(t, &fakeTranscriber{text: "some text", lang: "en"})
 
 	facade := &mockFacade{
 		// GetVideo returns error → triggers InsertVideo
@@ -199,22 +208,17 @@ func TestRun_InsertVideoError(t *testing.T) {
 }
 
 // TestRun_NewVideoNewTranscript is the happy-path: video and transcript are both
-// new, captions are fetched, summarized, and a markdown file is written.
+// new, the transcriber returns text, summarization runs, and a markdown file is written.
 func TestRun_NewVideoNewTranscript(t *testing.T) {
-	srv := captionServer(t, `<transcript><text>Hello world</text></transcript>`)
-	defer srv.Close()
+	ft := &fakeTranscriber{text: "Hello world transcript", lang: "en"}
+	useTranscriber(t, ft)
+	useListNames(t, []string{"Alice Smith", "Bob Jones"})
 
-	origLC := listCaptions
 	origDS := doSummarize
-	defer func() {
-		listCaptions = origLC
-		doSummarize = origDS
-	}()
-
-	listCaptions = func(string) ([]transcript.Caption, error) {
-		return []transcript.Caption{{LanguageCode: "en", BaseUrl: srv.URL}}, nil
-	}
-	doSummarize = func(_ context.Context, text string) (string, error) {
+	defer func() { doSummarize = origDS }()
+	var gotNames []string
+	doSummarize = func(_ context.Context, _ string, names []string) (string, error) {
+		gotNames = names
 		return "## Summary\n\nTest summary.", nil
 	}
 
@@ -230,6 +234,12 @@ func TestRun_NewVideoNewTranscript(t *testing.T) {
 	if err := Run(context.Background(), facade, nil, testVideo()); err != nil {
 		t.Fatalf("Run error: %v", err)
 	}
+	if ft.calledWith != "vid123" {
+		t.Errorf("transcriber called with %q, want %q", ft.calledWith, "vid123")
+	}
+	if len(gotNames) == 0 {
+		t.Errorf("doSummarize received no names; expected names from listNames stub")
+	}
 
 	mdPath := path.Join(dir, "2024", "March", "vid123.md")
 	if _, err := os.Stat(mdPath); err != nil {
@@ -240,21 +250,13 @@ func TestRun_NewVideoNewTranscript(t *testing.T) {
 // TestRun_ExistingTranscript covers the case where the transcript already exists
 // in the DB — summarization is skipped and the existing summary is used.
 func TestRun_ExistingTranscript(t *testing.T) {
-	srv := captionServer(t, `<transcript><text>Hello world</text></transcript>`)
-	defer srv.Close()
+	useTranscriber(t, &fakeTranscriber{text: "Hello world transcript", lang: "en"})
+	useListNames(t, nil)
 
-	origLC := listCaptions
 	origDS := doSummarize
-	defer func() {
-		listCaptions = origLC
-		doSummarize = origDS
-	}()
-
-	listCaptions = func(string) ([]transcript.Caption, error) {
-		return []transcript.Caption{{LanguageCode: "en", BaseUrl: srv.URL}}, nil
-	}
+	defer func() { doSummarize = origDS }()
 	summarizeCalled := false
-	doSummarize = func(_ context.Context, _ string) (string, error) {
+	doSummarize = func(_ context.Context, _ string, _ []string) (string, error) {
 		summarizeCalled = true
 		return "should not be called", nil
 	}
@@ -290,5 +292,32 @@ func TestRun_ExistingTranscript(t *testing.T) {
 	}
 	if !strings.Contains(string(data), "## Cached Summary") {
 		t.Errorf("markdown should contain cached summary, got:\n%s", data)
+	}
+}
+
+// TestRun_TranscriberSelection verifies that Run uses whatever newTranscriber returns.
+func TestRun_TranscriberSelection(t *testing.T) {
+	ft := &fakeTranscriber{text: "x", lang: "en"}
+	useTranscriber(t, ft)
+	useListNames(t, nil)
+
+	origDS := doSummarize
+	defer func() { doSummarize = origDS }()
+	doSummarize = func(_ context.Context, _ string, _ []string) (string, error) { return "summary", nil }
+
+	dir := t.TempDir()
+	t.Setenv("HUGO_CONTENT_DIR", dir)
+
+	facade := &mockFacade{
+		getVideoFn: func(_ context.Context, _ *mongo.Client, _ string) (*transcript.Video, error) {
+			return testVideo(), nil
+		},
+	}
+
+	if err := Run(context.Background(), facade, nil, testVideo()); err != nil {
+		t.Fatalf("Run error: %v", err)
+	}
+	if ft.calledWith == "" {
+		t.Error("expected fakeTranscriber to be called via newTranscriber seam")
 	}
 }

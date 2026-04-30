@@ -5,7 +5,7 @@ SA_EMAIL         := transcript-summarizer@$(PROJECT_ID).iam.gserviceaccount.com
 CONTENT_BUCKET   := $(PROJECT_ID)-hugo-content
 PUBSUB_TOPIC     := youtube-pipeline-trigger
 
-.PHONY: test test-verbose test-coverage test-integration deploy deploy-no-facebook
+.PHONY: test test-verbose test-coverage test-integration build-officials officials deploy deploy-no-facebook
 
 test:
 	go test ./pkg/...
@@ -21,6 +21,12 @@ test-coverage:
 test-integration:
 	go test -tags integration ./pkg/...
 
+build-officials:
+	go build -o bin/officials ./cmd/officials/
+
+officials: build-officials
+	./bin/officials
+
 deploy:
 	gcloud functions deploy youtube-webhook \
 		--gen2 \
@@ -34,7 +40,7 @@ deploy:
 		--timeout=540s \
 		--memory=512Mi \
 		--set-env-vars="HUGO_CONTENT_DIR=/tmp/hugo-content/minutes,GCS_BUCKET=$(CONTENT_BUCKET),PUBSUB_PROJECT=$(PROJECT_ID),PUBSUB_TOPIC=$(PUBSUB_TOPIC),FACEBOOK_ENABLED=$(FACEBOOK_ENABLED)" \
-		--set-secrets="MONGODB_URI=mongodb-uri:latest,CHATGPT_API_KEY=openai-api-key:latest,FACEBOOK_PAGE_ID=facebook-page-id:latest,FACEBOOK_PAGE_TOKEN=facebook-page-token:latest,YOUTUBE_API_KEY=youtube-api-key:latest" \
+		--set-secrets="MONGODB_URI=mongodb-uri:latest,CHATGPT_API_KEY=openai-api-key:latest,FACEBOOK_PAGE_ID=facebook-page-id:latest,FACEBOOK_PAGE_TOKEN=facebook-page-token:latest,YOUTUBE_API_KEY=youtube-api-key:latest,SUPADATA_API_KEY=supadata-api-key:latest" \
 		--project=$(PROJECT_ID)
 
 deploy-no-facebook: FACEBOOK_ENABLED=false

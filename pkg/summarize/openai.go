@@ -2,19 +2,26 @@ package summarize
 
 import (
 	"fmt"
+	"strings"
+
 	openai "github.com/sashabaranov/go-openai"
 	"golang.org/x/net/context"
-	"log"
 	"os"
 )
 
-func Summarize(ctx context.Context, text string) (string, error) {
+const userPromptBase = `Summarize the transcript of the meeting below. The title of the minutes must include the phrase "Unofficial Minutes". Include information about attendance, what topics were discussed, what motions were made, and whether they passed. Generate in valid Markdown format.`
+
+func Summarize(ctx context.Context, text string, names []string) (string, error) {
 	apiKey := os.Getenv("CHATGPT_API_KEY")
 	if apiKey == "" {
-		log.Fatal("Set your 'CHATGPT_API_KEY' environment variable.")
+		return "", fmt.Errorf("CHATGPT_API_KEY environment variable not set")
 	}
-	// Limit content length for ChatGPT
-	//text = string([]rune(text)[:10000])
+
+	userPrompt := userPromptBase
+	if len(names) > 0 {
+		userPrompt += " Ensure that the following names are spelled correctly: " + strings.Join(names, ", ")
+	}
+
 	client := openai.NewClient(apiKey)
 	resp, err := client.CreateChatCompletion(
 		ctx,
@@ -27,7 +34,7 @@ func Summarize(ctx context.Context, text string) (string, error) {
 				},
 				{
 					Role:    openai.ChatMessageRoleUser,
-					Content: "Summarize the transcript of the meeting below. The title of the minutes must include the phrase \"Unofficial Minutes\". Include information about attendance, what topics were discussed, what motions were made, and whether they passed. Generate in valid Markdown format. Ensure that the following names are spelled correctly: John Keohane, Erin Bradley, Richard Wells, Benjamin Zoll, Roxanne Musto",
+					Content: userPrompt,
 				},
 				{
 					Role:    openai.ChatMessageRoleUser,
@@ -35,13 +42,9 @@ func Summarize(ctx context.Context, text string) (string, error) {
 				},
 			},
 		},
-	) //Do not add text about the preparation or submission of the minutes.
-	//, using headings as appropriate and ordered lists for topics discussed.
-	//Use arabic numerals not roman numerals for ordered lists.
-	//pay attention to usage of Robert's Rules of Order.
-	
+	)
 	if err != nil {
-		return "", fmt.Errorf("ChatCompletion error: %v\n", err)
+		return "", fmt.Errorf("ChatCompletion: %w", err)
 	}
 	return resp.Choices[0].Message.Content, nil
 }

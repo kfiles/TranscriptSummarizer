@@ -30,3 +30,6 @@ go.work.sum
 #Hugo generated
 site/public/
 site/content/
+
+# Compiled binaries
+bin/

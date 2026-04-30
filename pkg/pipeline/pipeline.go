@@ -23,8 +23,9 @@ const defaultHugoContentDir = "site/content/minutes"
 const indexName = "_index.md"
 
 var (
-	listCaptions = transcript.ListVideoCaptions
-	doSummarize  = summarize.Summarize
+	newTranscriber = transcript.NewVideoTranscriber
+	doSummarize    = summarize.Summarize
+	listNames      = db.ListOfficialNames
 )
 
 // Run processes a single video: stores metadata in MongoDB, extracts and summarizes the
@@ -44,71 +45,105 @@ func Run(ctx context.Context, facade db.Facade, client *mongo.Client, v *transcr
 		hugoContentDir = defaultHugoContentDir
 	}
 
+	log.Printf("pipeline: checking if video %s exists in database", v.VideoId)
 	_, verr := facade.GetVideo(ctx, client, v.VideoId)
 	if verr != nil {
+		log.Printf("pipeline: video %s not found, inserting metadata", v.VideoId)
 		if err := facade.InsertVideo(ctx, client, v); err != nil {
 			return fmt.Errorf("insert video %s: %w", v.VideoId, err)
 		}
+		log.Printf("pipeline: inserted metadata for video %s", v.VideoId)
+	} else {
+		log.Printf("pipeline: video %s already exists in database", v.VideoId)
 	}
 
-	captions, err := listCaptions(v.VideoId)
+	log.Printf("pipeline: transcribing video %s", v.VideoId)
+	text, lang, err := newTranscriber().Transcribe(ctx, v.VideoId)
 	if err != nil {
-		return fmt.Errorf("fetch captions for %s: %w", v.VideoId, err)
+		return fmt.Errorf("transcribe %s: %w", v.VideoId, err)
+	}
+	if text == "" {
+		return fmt.Errorf("empty transcript for video %s", v.VideoId)
+	}
+	log.Printf("pipeline: transcribed video %s: lang=%s, length=%d chars", v.VideoId, lang, len(text))
+
+	log.Printf("pipeline: fetching official names for video %s", v.VideoId)
+	names, err := listNames(ctx, client)
+	if err != nil {
+		log.Printf("pipeline: fetch official names: %v — continuing without name list", err)
+		names = nil
+	} else {
+		log.Printf("pipeline: fetched %d official names", len(names))
 	}
 
-	if len(captions) == 0 {
-		return fmt.Errorf("no caption tracks found for video %s", v.VideoId)
+	log.Printf("pipeline: processing transcript for video %s (lang=%s)", v.VideoId, lang)
+	if err := processTranscript(ctx, facade, client, v, text, lang, names, hugoContentDir); err != nil {
+		return fmt.Errorf("transcript %s for video %s: %w", lang, v.VideoId, err)
 	}
-
-	first := captions[0]
-	if err := processCaption(ctx, facade, client, v, first, hugoContentDir); err != nil {
-		log.Printf("caption %s for video %s: %v", first.LanguageCode, v.VideoId, err)
-	}
+	log.Printf("pipeline: completed processing for video %s", v.VideoId)
 	return nil
 }
 
-func processCaption(ctx context.Context, facade db.Facade, client *mongo.Client, v *transcript.Video, c transcript.Caption, hugoContentDir string) error {
-	text, err := c.ExtractText()
-	if err != nil {
-		return fmt.Errorf("extract text: %w", err)
-	}
+func processTranscript(ctx context.Context, facade db.Facade, client *mongo.Client, v *transcript.Video, text, languageCode string, names []string, hugoContentDir string) error {
+	newT := transcript.NewTranscript(v.VideoId, languageCode, text)
 
-	newT := transcript.NewTranscript(v.VideoId, c.LanguageCode, text)
+	log.Printf("pipeline: checking for existing transcript for video %s (lang=%s)", v.VideoId, languageCode)
 	t, trerr := facade.GetTranscript(ctx, client, newT.VideoId, newT.LanguageCode)
 	if trerr != nil {
-		if err = facade.InsertTranscript(ctx, client, newT); err != nil {
+		log.Printf("pipeline: no existing transcript for video %s, inserting", v.VideoId)
+		if err := facade.InsertTranscript(ctx, client, newT); err != nil {
 			return fmt.Errorf("insert transcript: %w", err)
 		}
-		summary, serr := doSummarize(ctx, newT.RetrievedText)
+		log.Printf("pipeline: stored transcript for video %s (%d chars)", v.VideoId, len(text))
+
+		log.Printf("pipeline: summarizing transcript for video %s (%d chars, %d names)", v.VideoId, len(newT.RetrievedText), len(names))
+		summary, serr := doSummarize(ctx, newT.RetrievedText, names)
 		if serr != nil {
 			return fmt.Errorf("summarize: %w", serr)
 		}
+		log.Printf("pipeline: summary generated for video %s (%d chars)", v.VideoId, len(summary))
 		newT.SummaryText = summary
 		t = newT
-		if err = facade.UpdateTranscript(ctx, client, newT); err != nil {
-			log.Printf("update transcript for %s: %v", v.VideoId, err)
+
+		log.Printf("pipeline: updating transcript record for video %s with summary", v.VideoId)
+		if err := facade.UpdateTranscript(ctx, client, newT); err != nil {
+			log.Printf("pipeline: update transcript for %s: %v", v.VideoId, err)
 		}
+	} else {
+		log.Printf("pipeline: found existing transcript for video %s (lang=%s)", v.VideoId, languageCode)
 	}
 
+	log.Printf("pipeline: writing markdown for video %s to %s", v.VideoId, hugoContentDir)
 	mdPath, err := writeMarkdown(v, t, hugoContentDir)
 	if err != nil {
 		return fmt.Errorf("write markdown: %w", err)
 	}
+	log.Printf("pipeline: markdown written to %s", mdPath)
 
 	if bucket := os.Getenv("GCS_BUCKET"); bucket != "" {
+		log.Printf("pipeline: uploading %s to GCS bucket %s", mdPath, bucket)
 		if err := uploadToGCS(ctx, bucket, hugoContentDir, mdPath); err != nil {
-			log.Printf("GCS upload for %s: %v", v.VideoId, err)
-		} else if err := publishBuildTrigger(ctx, v.VideoId); err != nil {
-			log.Printf("Pub/Sub publish for %s: %v", v.VideoId, err)
+			log.Printf("pipeline: GCS upload for %s: %v", v.VideoId, err)
+		} else {
+			log.Printf("pipeline: GCS upload complete for video %s", v.VideoId)
+			log.Printf("pipeline: publishing build trigger for video %s", v.VideoId)
+			if err := publishBuildTrigger(ctx, v.VideoId); err != nil {
+				log.Printf("pipeline: Pub/Sub publish for %s: %v", v.VideoId, err)
+			} else {
+				log.Printf("pipeline: build trigger published for video %s", v.VideoId)
+			}
 		}
 	}
 
 	fbPageID := os.Getenv("FACEBOOK_PAGE_ID")
 	fbToken := os.Getenv("FACEBOOK_PAGE_TOKEN")
 	if os.Getenv("FACEBOOK_ENABLED") != "false" && fbPageID != "" && fbToken != "" {
+		log.Printf("pipeline: posting to Facebook for video %s", v.VideoId)
 		post := facebook.FormatPost(v.Title, t.SummaryText)
 		if err := facebook.PostToPage(fbPageID, fbToken, post); err != nil {
-			log.Printf("Facebook post for %s: %v", v.VideoId, err)
+			log.Printf("pipeline: Facebook post for %s: %v", v.VideoId, err)
+		} else {
+			log.Printf("pipeline: Facebook post complete for video %s", v.VideoId)
 		}
 	}
 	return nil

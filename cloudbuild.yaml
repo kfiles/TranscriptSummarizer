@@ -49,7 +49,7 @@ availableSecrets:
 
 # Substitution defaults — override these in the Cloud Build trigger UI or --substitutions flag.
 substitutions:
-  _CONTENT_BUCKET: $PROJECT_ID-hugo-content
+  _CONTENT_BUCKET: ${PROJECT_ID}-hugo-content
   _FIREBASE_PROJECT: miltonmeetingsummarizer
 
 options:

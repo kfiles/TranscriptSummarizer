@@ -1,16 +1,4 @@
 steps:
-  # Build the officials binary and populate the MongoDB officials collection.
-  - name: 'golang:1.25'
-    id: populate-officials
-    entrypoint: bash
-    args:
-      - '-c'
-      - |
-        go build -o /tmp/officials ./cmd/officials/ &&
-        /tmp/officials
-    secretEnv:
-      - MONGODB_URI
-
   # Create hugo content dir
   - name: 'busybox'
     id: mk-contentdir

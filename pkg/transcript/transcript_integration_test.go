@@ -35,3 +35,30 @@ func TestIntegrationSupadataTranscribe(t *testing.T) {
 		t.Errorf("lang = %q, want %q", lang, "en")
 	}
 }
+
+// TestIntegrationTranscriptAPITranscribe calls the live TranscriptAPI.com API for a known
+// public YouTube video and verifies a non-empty English transcript is returned.
+// Skipped unless TRANSCRIPTAPI_API_KEY is set.
+func TestIntegrationTranscriptAPITranscribe(t *testing.T) {
+	apiKey := os.Getenv("TRANSCRIPTAPI_API_KEY")
+	if apiKey == "" {
+		t.Skip("set TRANSCRIPTAPI_API_KEY to run TranscriptAPI integration tests")
+	}
+
+	const videoID = "zqYFtk5e8Pk"
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	s := NewTranscriptAPITranscriber(apiKey)
+	text, lang, err := s.Transcribe(ctx, videoID)
+	if err != nil {
+		t.Fatalf("Transcribe(%q): %v", videoID, err)
+	}
+	if text == "" {
+		t.Errorf("Transcribe(%q) returned empty transcript (lang=%q)", videoID, lang)
+	}
+	if lang != "en" {
+		t.Errorf("lang = %q, want %q", lang, "en")
+	}
+}

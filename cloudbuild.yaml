@@ -11,6 +11,11 @@ steps:
     secretEnv:
       - MONGODB_URI
 
+  # Create hugo content dir
+  - name: 'busybox'
+    id: mk-contentdir
+    args: ['mkdir', '-p', 'site/content/minutes']
+
   # Pull new markdown files written by the Cloud Function from GCS into the repo's
   # Hugo content directory. Existing files are preserved; only new/updated ones are added.
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'

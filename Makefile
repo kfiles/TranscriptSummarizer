@@ -39,8 +39,8 @@ deploy:
 		--service-account=$(SA_EMAIL) \
 		--timeout=540s \
 		--memory=512Mi \
-		--set-env-vars="HUGO_CONTENT_DIR=/tmp/hugo-content/minutes,GCS_BUCKET=$(CONTENT_BUCKET),PUBSUB_PROJECT=$(PROJECT_ID),PUBSUB_TOPIC=$(PUBSUB_TOPIC),FACEBOOK_ENABLED=$(FACEBOOK_ENABLED)" \
-		--set-secrets="MONGODB_URI=mongodb-uri:latest,CHATGPT_API_KEY=openai-api-key:latest,FACEBOOK_PAGE_ID=facebook-page-id:latest,FACEBOOK_PAGE_TOKEN=facebook-page-token:latest,YOUTUBE_API_KEY=youtube-api-key:latest,SUPADATA_API_KEY=supadata-api-key:latest" \
+		--set-env-vars="HUGO_CONTENT_DIR=/tmp/hugo-content/minutes,GCS_BUCKET=$(CONTENT_BUCKET),PUBSUB_PROJECT=$(PROJECT_ID),PUBSUB_TOPIC=$(PUBSUB_TOPIC),FACEBOOK_ENABLED=$(FACEBOOK_ENABLED),TRANSCRIPT_PROVIDER=transcriptapi" \
+		--set-secrets="MONGODB_URI=mongodb-uri:latest,CHATGPT_API_KEY=openai-api-key:latest,FACEBOOK_PAGE_ID=facebook-page-id:latest,FACEBOOK_PAGE_TOKEN=facebook-page-token:latest,YOUTUBE_API_KEY=youtube-api-key:latest,SUPADATA_API_KEY=supadata-api-key:latest,TRANSCRIPTAPI_API_KEY=transcriptapi-api-key:latest" \
 		--project=$(PROJECT_ID)
 
 deploy-no-facebook: FACEBOOK_ENABLED=false

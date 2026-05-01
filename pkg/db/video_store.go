@@ -9,6 +9,21 @@ import (
 
 const collectionVideos = "videos"
 
+func (f *dbFacade) ListAllVideos(ctx context.Context, dbClient *mongo.Client) ([]*transcript.Video, error) {
+	ctx, cancel := capCtx(ctx)
+	defer cancel()
+	cursor, err := dbClient.Database(databaseName).Collection(collectionVideos).Find(ctx, bson.D{})
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.Background())
+	var videos []*transcript.Video
+	if err := cursor.All(ctx, &videos); err != nil {
+		return nil, err
+	}
+	return videos, nil
+}
+
 func (f *dbFacade) ListVideos(ctx context.Context, dbClient *mongo.Client, playlistID string) ([]*transcript.Video, error) {
 	return make([]*transcript.Video, 0), nil
 }

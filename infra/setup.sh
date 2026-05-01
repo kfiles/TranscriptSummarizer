@@ -77,6 +77,12 @@ gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
   --role="roles/datastore.user" \
   --condition="expression=resource.name == 'projects/${PROJECT_ID}/databases/meetingtranscripts',title=meetingtranscripts-writer-role"
 
+# Allow the function SA to use Firebase Admin SDK (Firestore, Auth, etc.)
+gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
+  --member="serviceAccount:${SA_EMAIL}" \
+  --role="roles/firebase.admin" \
+  --condition=None
+
 # Allow Cloud Build SA to deploy Firebase Hosting and read the firebase-ci-token secret.
 # Secret access is granted at the secret level (not project level) to avoid the
 # project's conditional IAM policy requiring an explicit condition on every binding.
@@ -176,7 +182,7 @@ gcloud functions deploy youtube-webhook \
   --service-account="${SA_EMAIL}" \
   --timeout=540s \
   --memory=512Mi \
-  --set-env-vars="HUGO_CONTENT_DIR=/tmp/hugo-content/minutes,GCS_BUCKET=${CONTENT_BUCKET},PUBSUB_PROJECT=${PROJECT_ID},PUBSUB_TOPIC=${PUBSUB_TOPIC},TRANSCRIPT_PROVIDER=transcriptapi" \
+  --set-env-vars="HUGO_CONTENT_DIR=/tmp/hugo-content/minutes,GCS_BUCKET=${CONTENT_BUCKET},PUBSUB_PROJECT=${PROJECT_ID},PUBSUB_TOPIC=${PUBSUB_TOPIC},TRANSCRIPT_PROVIDER=transcriptapi,PROJECT_ID=${PROJECT_ID}" \
   --set-secrets="\
 MONGODB_URI=mongodb-uri:latest,\
 CHATGPT_API_KEY=openai-api-key:latest,\

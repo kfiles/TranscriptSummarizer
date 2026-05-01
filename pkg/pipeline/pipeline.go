@@ -153,11 +153,71 @@ func processTranscript(ctx context.Context, facade db.Facade, client *mongo.Clie
 	fbToken := os.Getenv("FACEBOOK_PAGE_TOKEN")
 	if os.Getenv("FACEBOOK_ENABLED") != "false" && fbPageID != "" && fbToken != "" {
 		log.Printf("pipeline: posting to Facebook for video %s", v.VideoId)
-		post := facebook.FormatPost(v.Title, t.SummaryText)
+		var transcriptURL string
+		if projectID := os.Getenv("PROJECT_ID"); projectID != "" {
+			transcriptURL = facebook.TranscriptURL(projectID, v.VideoId, v.PublishedAt)
+		}
+		post := facebook.FormatPost(v.Title, t.SummaryText, transcriptURL)
 		if err := facebook.PostToPage(fbPageID, fbToken, post); err != nil {
 			log.Printf("pipeline: Facebook post for %s: %v", v.VideoId, err)
 		} else {
 			log.Printf("pipeline: Facebook post complete for video %s", v.VideoId)
+		}
+	}
+	return nil
+}
+
+// WriteAllMarkdown writes Hugo markdown for every video in the collection that
+// has valid metadata and a non-empty summary. It is called after new videos are
+// processed so that a from-scratch Hugo build always includes the full catalogue.
+func WriteAllMarkdown(ctx context.Context, facade db.Facade, client *mongo.Client) error {
+	hugoContentDir := os.Getenv("HUGO_CONTENT_DIR")
+	if hugoContentDir == "" {
+		hugoContentDir = defaultHugoContentDir
+	}
+
+	videos, err := facade.ListAllVideos(ctx, client)
+	if err != nil {
+		return fmt.Errorf("list all videos: %w", err)
+	}
+
+	var written []string
+	for _, v := range videos {
+		if v.VideoId == "" || v.Title == "" || v.PublishedAt.IsZero() {
+			continue
+		}
+		transcripts, err := facade.ListTranscripts(ctx, client, v.VideoId)
+		if err != nil {
+			log.Printf("pipeline: list transcripts for %s: %v", v.VideoId, err)
+			continue
+		}
+		var t *transcript.Transcript
+		for _, tr := range transcripts {
+			if tr.SummaryText != "" {
+				t = tr
+				break
+			}
+		}
+		if t == nil {
+			continue
+		}
+		mdPath, err := writeMarkdown(v, t, hugoContentDir)
+		if err != nil {
+			log.Printf("pipeline: write markdown for %s: %v", v.VideoId, err)
+			continue
+		}
+		written = append(written, mdPath)
+	}
+	log.Printf("pipeline: wrote markdown for %d/%d videos", len(written), len(videos))
+
+	if bucket := os.Getenv("GCS_BUCKET"); bucket != "" && len(written) > 0 {
+		for _, mdPath := range written {
+			if err := uploadToGCS(ctx, bucket, hugoContentDir, mdPath); err != nil {
+				log.Printf("pipeline: GCS upload %s: %v", mdPath, err)
+			}
+		}
+		if err := publishBuildTrigger(ctx, "all"); err != nil {
+			log.Printf("pipeline: build trigger: %v", err)
 		}
 	}
 	return nil

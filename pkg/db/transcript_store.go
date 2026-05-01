@@ -10,7 +10,18 @@ import (
 const collectionTranscripts = "transcripts"
 
 func (f *dbFacade) ListTranscripts(ctx context.Context, dbClient *mongo.Client, videoId string) ([]*transcript.Transcript, error) {
-	return make([]*transcript.Transcript, 0), nil
+	ctx, cancel := capCtx(ctx)
+	defer cancel()
+	cursor, err := dbClient.Database(databaseName).Collection(collectionTranscripts).Find(ctx, bson.D{{"videoId", videoId}})
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.Background())
+	var transcripts []*transcript.Transcript
+	if err := cursor.All(ctx, &transcripts); err != nil {
+		return nil, err
+	}
+	return transcripts, nil
 }
 
 func (f *dbFacade) GetTranscript(ctx context.Context, dbClient *mongo.Client, videoID string, languageCode string) (*transcript.Transcript, error) {

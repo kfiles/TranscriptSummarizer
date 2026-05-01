@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 
 	md "github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/ast"
@@ -47,13 +48,27 @@ func (r *fbRenderer) RenderNode(w io.Writer, node ast.Node, entering bool) ast.W
 func (r *fbRenderer) RenderHeader(w io.Writer, _ ast.Node) {}
 func (r *fbRenderer) RenderFooter(w io.Writer, _ ast.Node) {}
 
+// TranscriptURL returns the Firebase Hosting URL for a video's transcript page.
+func TranscriptURL(projectID, videoID string, publishedAt time.Time) string {
+	return fmt.Sprintf("https://%s.web.app/minutes/%s/%s/%s/",
+		projectID,
+		publishedAt.Format("2006"),
+		publishedAt.Format("January"),
+		videoID)
+}
+
 // FormatPost converts a Markdown summary to a Facebook-ready plain-text post.
-func FormatPost(title, markdownSummary string) string {
+// If transcriptURL is non-empty it is appended as a plain URL (auto-linkified by Facebook).
+func FormatPost(title, markdownSummary, transcriptURL string) string {
 	p := parser.New()
 	doc := md.Parse([]byte(markdownSummary), p)
 	rendered := md.Render(doc, &fbRenderer{})
 	body := strings.TrimSpace(string(rendered))
-	return title + "\n\n" + body
+	post := title + "\n\n" + body
+	if transcriptURL != "" {
+		post += "\n\nFull transcript: " + transcriptURL
+	}
+	return post
 }
 
 // postToEndpoint sends the message to an arbitrary feed endpoint — used directly by tests.

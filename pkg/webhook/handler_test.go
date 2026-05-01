@@ -71,6 +71,9 @@ func (f *fakeFacade) UpsertPlaylist(_ context.Context, _ *mongo.Client, _ *trans
 	return nil
 }
 func (f *fakeFacade) DeletePlaylist(_ context.Context, _ *mongo.Client, _ string) error { return nil }
+func (f *fakeFacade) ListAllVideos(_ context.Context, _ *mongo.Client) ([]*transcript.Video, error) {
+	return nil, nil
+}
 func (f *fakeFacade) ListVideos(_ context.Context, _ *mongo.Client, _ string) ([]*transcript.Video, error) {
 	return nil, nil
 }
@@ -112,6 +115,7 @@ func injectDeps(t *testing.T, fake *fakeFacade, entries []*transcript.PlaylistEn
 	origClient := newDBClientFn
 	origScan := scanPlaylistFn
 	origPipeline := runVideoPipelineFn
+	origWriteAll := writeAllMarkdownFn
 
 	newFacadeFn = func() db.Facade { return fake }
 	newDBClientFn = func() (*mongo.Client, error) { return nil, nil }
@@ -121,12 +125,14 @@ func injectDeps(t *testing.T, fake *fakeFacade, entries []*transcript.PlaylistEn
 	runVideoPipelineFn = func(_ context.Context, _ db.Facade, _ *mongo.Client, v *transcript.Video) error {
 		return pipelineErr(v.VideoId)
 	}
+	writeAllMarkdownFn = func(_ context.Context, _ db.Facade, _ *mongo.Client) error { return nil }
 
 	return func() {
 		newFacadeFn = origFacade
 		newDBClientFn = origClient
 		scanPlaylistFn = origScan
 		runVideoPipelineFn = origPipeline
+		writeAllMarkdownFn = origWriteAll
 	}
 }
 

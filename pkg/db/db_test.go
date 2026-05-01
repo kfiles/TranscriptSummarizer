@@ -52,16 +52,6 @@ func TestDeleteVideoReturnsNil(t *testing.T) {
 	}
 }
 
-func TestListTranscriptsReturnsEmpty(t *testing.T) {
-	f := NewFacade()
-	transcripts, err := f.ListTranscripts(context.Background(), nil, "v1")
-	if err != nil {
-		t.Fatalf("ListTranscripts() unexpected error: %v", err)
-	}
-	if len(transcripts) != 0 {
-		t.Errorf("ListTranscripts() len = %d, want 0", len(transcripts))
-	}
-}
 
 func TestDeleteTranscriptReturnsNil(t *testing.T) {
 	f := NewFacade()

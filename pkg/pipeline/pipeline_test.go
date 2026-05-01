@@ -72,6 +72,9 @@ func (m *mockFacade) UpsertPlaylist(ctx context.Context, c *mongo.Client, p *tra
 	return nil
 }
 func (m *mockFacade) DeletePlaylist(ctx context.Context, c *mongo.Client, id string) error { return nil }
+func (m *mockFacade) ListAllVideos(ctx context.Context, c *mongo.Client) ([]*transcript.Video, error) {
+	return nil, nil
+}
 func (m *mockFacade) ListVideos(ctx context.Context, c *mongo.Client, playlistID string) ([]*transcript.Video, error) {
 	return nil, nil
 }

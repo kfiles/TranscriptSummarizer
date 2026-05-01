@@ -7,17 +7,16 @@ steps:
       - '-p'
       - site/content/minutes
 
-
   # Retrieve generated docs from bucket
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
     id: sync-content
+    entrypoint: gsutil
     args:
       - '-m'
       - rsync
       - '-r'
       - gs://$_CONTENT_BUCKET/minutes/
       - site/content/minutes/
-    entrypoint: gsutil
 
   # Build the static site with hugo
   - name: hugomods/hugo:debian-std-node-lts-0.161.1
@@ -31,39 +30,30 @@ steps:
   # Install firebase-tools
   - name: node
     id: install-firebase
+    entrypoint: npm
     args:
       - install
       - firebase-tools
     waitFor:
       - hugo-build
-    entrypoint: npm
 
   # Deploy the firebase hosting site
   - name: node
     id: firebase-deploy
+    entrypoint: ./node_modules/.bin/firebase
     args:
       - deploy
       - '--only'
       - hosting
       - '--project'
       - $_FIREBASE_PROJECT
-      - '--token'
-      - $$FIREBASE_TOKEN
       - '--non-interactive'
     waitFor:
       - install-firebase
-    entrypoint: ./node_modules/.bin/firebase
-    secretEnv:
-      - FIREBASE_TOKEN
-
-substitutions:
-  _CONTENT_BUCKET: ${PROJECT_ID}-hugo-content
-  _FIREBASE_PROJECT: miltonmeetingsummarizer
-
-availableSecrets:
-  secretManager:
-    - versionName: projects/$PROJECT_ID/secrets/firebase-ci-token/versions/latest
-      env: FIREBASE_TOKEN
 
 options:
   logging: CLOUD_LOGGING_ONLY
+
+substitutions:
+  _FIREBASE_PROJECT: miltonmeetingsummarizer
+  _CONTENT_BUCKET: ${PROJECT_ID}-hugo-content

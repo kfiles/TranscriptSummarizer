@@ -5,10 +5,11 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 )
 
 func TestFormatPostTitlePrepended(t *testing.T) {
-	got := FormatPost("Board Meeting April 2026", "## Attendance\n\nJohn, Jane\n")
+	got := FormatPost("Board Meeting April 2026", "## Attendance\n\nJohn, Jane\n", "")
 	if !strings.HasPrefix(got, "Board Meeting April 2026\n") {
 		t.Errorf("FormatPost() title not at start: %q", got)
 	}
@@ -36,7 +37,7 @@ func TestFormatPostHeadingsDividers(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := FormatPost("Title", tt.input)
+			got := FormatPost("Title", tt.input, "")
 			if !strings.Contains(got, tt.wantIn) {
 				t.Errorf("FormatPost() missing %q in output: %q", tt.wantIn, got)
 			}
@@ -49,7 +50,7 @@ func TestFormatPostHeadingsDividers(t *testing.T) {
 
 func TestFormatPostBulletItems(t *testing.T) {
 	input := "- Motion approved\n- Quorum established\n- Budget reviewed\n"
-	got := FormatPost("Title", input)
+	got := FormatPost("Title", input, "")
 	if !strings.Contains(got, "•") {
 		t.Errorf("FormatPost() should convert list items to • bullets, got: %q", got)
 	}
@@ -62,7 +63,7 @@ func TestFormatPostBulletItems(t *testing.T) {
 }
 
 func TestFormatPostEmptySummary(t *testing.T) {
-	got := FormatPost("My Title", "")
+	got := FormatPost("My Title", "", "")
 	if !strings.Contains(got, "My Title") {
 		t.Errorf("FormatPost() with empty summary should still include title, got: %q", got)
 	}
@@ -70,7 +71,7 @@ func TestFormatPostEmptySummary(t *testing.T) {
 
 func TestFormatPostFullSummary(t *testing.T) {
 	input := "## Attendance\n\nJohn Keohane, Erin Bradley\n\n## Motions\n\n- Approve budget\n- Adjourn meeting\n"
-	got := FormatPost("April Meeting", input)
+	got := FormatPost("April Meeting", input, "")
 	if !strings.Contains(got, "━━━ Attendance ━━━") {
 		t.Errorf("FormatPost() missing Attendance divider, got: %q", got)
 	}
@@ -79,6 +80,68 @@ func TestFormatPostFullSummary(t *testing.T) {
 	}
 	if !strings.Contains(got, "• Approve budget") {
 		t.Errorf("FormatPost() missing bullet item, got: %q", got)
+	}
+}
+
+func TestFormatPostWithURL(t *testing.T) {
+	url := "https://miltonmeetingsummarizer.web.app/minutes/2026/April/abc123/"
+	got := FormatPost("April Meeting", "## Section\n\nText.", url)
+	if !strings.Contains(got, "Full transcript: "+url) {
+		t.Errorf("FormatPost() missing transcript URL line, got: %q", got)
+	}
+}
+
+func TestFormatPostURLOmittedWhenEmpty(t *testing.T) {
+	got := FormatPost("April Meeting", "## Section\n\nText.", "")
+	if strings.Contains(got, "Full transcript:") {
+		t.Errorf("FormatPost() should not include transcript line when URL is empty, got: %q", got)
+	}
+}
+
+func TestTranscriptURL(t *testing.T) {
+	tests := []struct {
+		name        string
+		projectID   string
+		videoID     string
+		publishedAt time.Time
+		want        string
+	}{
+		{
+			name:        "typical April meeting",
+			projectID:   "miltonmeetingsummarizer",
+			videoID:     "abc123",
+			publishedAt: time.Date(2026, time.April, 15, 0, 0, 0, 0, time.UTC),
+			want:        "https://miltonmeetingsummarizer.web.app/minutes/2026/April/abc123/",
+		},
+		{
+			name:        "January year boundary",
+			projectID:   "myproject",
+			videoID:     "xyz",
+			publishedAt: time.Date(2025, time.January, 1, 0, 0, 0, 0, time.UTC),
+			want:        "https://myproject.web.app/minutes/2025/January/xyz/",
+		},
+		{
+			name:        "December end of year",
+			projectID:   "myproject",
+			videoID:     "xyz",
+			publishedAt: time.Date(2025, time.December, 31, 0, 0, 0, 0, time.UTC),
+			want:        "https://myproject.web.app/minutes/2025/December/xyz/",
+		},
+		{
+			name:        "video ID with hyphens",
+			projectID:   "civic-app",
+			videoID:     "dQw4w9WgXcQ",
+			publishedAt: time.Date(2026, time.March, 3, 0, 0, 0, 0, time.UTC),
+			want:        "https://civic-app.web.app/minutes/2026/March/dQw4w9WgXcQ/",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := TranscriptURL(tt.projectID, tt.videoID, tt.publishedAt)
+			if got != tt.want {
+				t.Errorf("TranscriptURL() = %q, want %q", got, tt.want)
+			}
+		})
 	}
 }
 

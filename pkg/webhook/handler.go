@@ -60,11 +60,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 }
 
 var (
-	runPipelineFn      = runPipeline
-	newFacadeFn        = func() db.Facade { return db.NewFacade() }
-	newDBClientFn      = db.NewClient
-	scanPlaylistFn     = transcript.ScanPlaylist
-	runVideoPipelineFn = pipeline.Run
+	runPipelineFn       = runPipeline
+	newFacadeFn         = func() db.Facade { return db.NewFacade() }
+	newDBClientFn       = db.NewClient
+	scanPlaylistFn      = transcript.ScanPlaylist
+	runVideoPipelineFn  = pipeline.Run
+	writeAllMarkdownFn  = pipeline.WriteAllMarkdown
 )
 
 func runPipeline(ctx context.Context, channelID string) error {
@@ -96,6 +97,7 @@ func runPipeline(ctx context.Context, channelID string) error {
 	maxFailures := envInt("MAX_PIPELINE_FAILURES", 3)
 
 	failCount := 0
+	successCount := 0
 	circuitTripped := false
 
 	for _, pl := range playlists {
@@ -131,6 +133,7 @@ func runPipeline(ctx context.Context, channelID string) error {
 				}
 				continue
 			}
+			successCount++
 
 			// Update playlist record with the page where this video was found.
 			if entry.Video.Position+1 > pl.NumEntries {
@@ -141,6 +144,13 @@ func runPipeline(ctx context.Context, channelID string) error {
 			if err := facade.UpdatePlaylist(ctx, client, pl); err != nil {
 				log.Printf("webhook: update playlist %s: %v", pl.PlaylistId, err)
 			}
+		}
+	}
+
+	if successCount > 0 {
+		log.Printf("webhook: %d new transcript(s) processed — regenerating Hugo content", successCount)
+		if err := writeAllMarkdownFn(ctx, facade, client); err != nil {
+			log.Printf("webhook: write all markdown: %v", err)
 		}
 	}
 

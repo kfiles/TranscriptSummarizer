@@ -2,6 +2,7 @@ package transcript
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -86,6 +87,28 @@ func TestTranscriptAPI_EmptyVideoID(t *testing.T) {
 	}
 }
 
+func TestTranscriptAPI_404_ReturnsErrUnavailable(t *testing.T) {
+	var count int32
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		atomic.AddInt32(&count, 1)
+		w.WriteHeader(http.StatusNotFound)
+		w.Write([]byte(`{"detail":"not found"}`)) //nolint:errcheck
+	}))
+	defer srv.Close()
+
+	tr := newTestTranscriptAPI(t, srv.URL)
+	_, _, err := tr.Transcribe(context.Background(), "vid123")
+	if err == nil {
+		t.Fatal("expected error for 404, got nil")
+	}
+	if !errors.Is(err, ErrTranscriptUnavailable) {
+		t.Errorf("error = %v, want errors.Is(err, ErrTranscriptUnavailable) == true", err)
+	}
+	if got := atomic.LoadInt32(&count); got != 1 {
+		t.Errorf("requests = %d, want 1 (no retry on 404)", got)
+	}
+}
+
 func TestTranscriptAPI_NonRetryableErrors(t *testing.T) {
 	tests := []struct {
 		name   string
@@ -93,7 +116,6 @@ func TestTranscriptAPI_NonRetryableErrors(t *testing.T) {
 	}{
 		{"401 unauthorized", http.StatusUnauthorized},
 		{"402 payment required", http.StatusPaymentRequired},
-		{"404 not found", http.StatusNotFound},
 		{"500 server error", http.StatusInternalServerError},
 	}
 	for _, tt := range tests {

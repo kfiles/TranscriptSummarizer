@@ -104,6 +104,9 @@ func (t *TranscriptAPITranscriber) Transcribe(ctx context.Context, videoID strin
 				}
 			}
 
+		case http.StatusNotFound:
+			return "", "", fmt.Errorf("transcriptapi: %w", ErrTranscriptUnavailable)
+
 		default:
 			return "", "", fmt.Errorf("transcriptapi: unexpected status %d: %s", resp.StatusCode, string(body))
 		}

@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "miltonmeetingsummarizer",
     "public": "site/public",
     "ignore": [
       "firebase.json",

@@ -40,8 +40,9 @@ GITHUB_REPO=$(gcloud builds triggers describe transcript-summarizer-push \
 if gcloud builds triggers describe hugo-build-and-deploy --project="${PROJECT_ID}" &>/dev/null; then
   echo "Removing existing build trigger."
   gcloud builds triggers delete "hugo-build-and-deploy"
-else
-  gcloud builds triggers create pubsub \
+fi
+
+gcloud builds triggers create pubsub \
     --name="hugo-build-and-deploy" \
     --topic="projects/${PROJECT_ID}/topics/${PUBSUB_TOPIC}" \
     --service-account="projects/${PROJECT_ID}/serviceAccounts/${SA_EMAIL}" \
@@ -51,4 +52,3 @@ else
     --branch="main" \
     --substitutions="_CONTENT_BUCKET=${CONTENT_BUCKET},_FIREBASE_PROJECT=${FIREBASE_PROJECT}" \
     --project="${PROJECT_ID}"
-fi

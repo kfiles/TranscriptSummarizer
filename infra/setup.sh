@@ -135,10 +135,9 @@ create_secret "transcriptapi-api-key" "TranscriptAPI.com API key (transcript pro
 create_secret "firebase-ci-token"     "Firebase CI token (from: firebase login:ci)"
 
 # Grant the function SA accessor rights on each secret it needs at runtime.
-for SECRET in mongodb-uri openai-api-key facebook-page-id facebook-page-token youtube-api-key supadata-api-key transcriptapi-api-key; do
+for SECRET in mongodb-uri openai-api-key facebook-page-id facebook-page-token youtube-api-key supadata-api-key transcriptapi-api-key firebase-api-token; do
   grant_secret_access "${SECRET}"
 done
-# firebase-ci-token is used by Cloud Build SA, not the function SA — handled below.
 
 # ── Cloud Build trigger (Pub/Sub → Hugo build + Firebase deploy) ──────────────
 echo "=== Creating Cloud Build trigger ==="

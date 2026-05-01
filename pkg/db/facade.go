@@ -11,6 +11,7 @@ type Facade interface {
 	GetPlaylist(ctx context.Context, dbClient *mongo.Client, playlistID string) (*transcript.Playlist, error)
 	InsertPlaylist(ctx context.Context, dbClient *mongo.Client, playlist *transcript.Playlist) error
 	UpdatePlaylist(ctx context.Context, dbClient *mongo.Client, playlist *transcript.Playlist) error
+	UpsertPlaylist(ctx context.Context, dbClient *mongo.Client, playlist *transcript.Playlist) error
 	DeletePlaylist(ctx context.Context, dbClient *mongo.Client, playlistID string) error
 	ListVideos(ctx context.Context, dbClient *mongo.Client, playlistID string) ([]*transcript.Video, error)
 	GetVideo(ctx context.Context, dbClient *mongo.Client, videoID string) (*transcript.Video, error)

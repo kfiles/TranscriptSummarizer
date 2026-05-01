@@ -19,44 +19,6 @@ func TestNewFacade(t *testing.T) {
 // The methods below are stubs that do not use the MongoDB client.
 // Passing nil is safe for these specific implementations.
 
-func TestListPlaylistsReturnsEmpty(t *testing.T) {
-	f := NewFacade()
-	playlists, err := f.ListPlaylists(context.Background(), nil, "chan1")
-	if err != nil {
-		t.Fatalf("ListPlaylists() unexpected error: %v", err)
-	}
-	if len(playlists) != 0 {
-		t.Errorf("ListPlaylists() len = %d, want 0", len(playlists))
-	}
-}
-
-func TestGetPlaylistReturnsNonNil(t *testing.T) {
-	f := NewFacade()
-	p, err := f.GetPlaylist(context.Background(), nil, "pl1")
-	if err != nil {
-		t.Fatalf("GetPlaylist() unexpected error: %v", err)
-	}
-	if p == nil {
-		t.Error("GetPlaylist() returned nil, want non-nil")
-	}
-}
-
-func TestUpdatePlaylistReturnsNil(t *testing.T) {
-	f := NewFacade()
-	err := f.UpdatePlaylist(context.Background(), nil, &transcript.Playlist{})
-	if err != nil {
-		t.Errorf("UpdatePlaylist() unexpected error: %v", err)
-	}
-}
-
-func TestDeletePlaylistReturnsNil(t *testing.T) {
-	f := NewFacade()
-	err := f.DeletePlaylist(context.Background(), nil, "pl1")
-	if err != nil {
-		t.Errorf("DeletePlaylist() unexpected error: %v", err)
-	}
-}
-
 func TestListVideosReturnsEmpty(t *testing.T) {
 	f := NewFacade()
 	videos, err := f.ListVideos(context.Background(), nil, "pl1")

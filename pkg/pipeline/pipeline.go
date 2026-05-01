@@ -45,15 +45,9 @@ func Run(ctx context.Context, facade db.Facade, client *mongo.Client, v *transcr
 		hugoContentDir = defaultHugoContentDir
 	}
 
-	log.Printf("pipeline: checking if video %s exists in database", v.VideoId)
 	_, verr := facade.GetVideo(ctx, client, v.VideoId)
-	if verr != nil {
-		log.Printf("pipeline: video %s not found, inserting metadata", v.VideoId)
-		if err := facade.InsertVideo(ctx, client, v); err != nil {
-			return fmt.Errorf("insert video %s: %w", v.VideoId, err)
-		}
-		log.Printf("pipeline: inserted metadata for video %s", v.VideoId)
-	} else {
+	videoExists := verr == nil
+	if videoExists {
 		log.Printf("pipeline: video %s already exists in database", v.VideoId)
 	}
 
@@ -80,6 +74,15 @@ func Run(ctx context.Context, facade db.Facade, client *mongo.Client, v *transcr
 	if err := processTranscript(ctx, facade, client, v, text, lang, names, hugoContentDir); err != nil {
 		return fmt.Errorf("transcript %s for video %s: %w", lang, v.VideoId, err)
 	}
+
+	if !videoExists {
+		log.Printf("pipeline: inserting metadata for video %s", v.VideoId)
+		if err := facade.InsertVideo(ctx, client, v); err != nil {
+			return fmt.Errorf("insert video %s: %w", v.VideoId, err)
+		}
+		log.Printf("pipeline: inserted metadata for video %s", v.VideoId)
+	}
+
 	log.Printf("pipeline: completed processing for video %s", v.VideoId)
 	return nil
 }

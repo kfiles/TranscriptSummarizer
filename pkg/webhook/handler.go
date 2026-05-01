@@ -6,6 +6,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"strconv"
+	"time"
 
 	"github.com/kfiles/transcriptsummarizer/pkg/db"
 	"github.com/kfiles/transcriptsummarizer/pkg/pipeline"
@@ -13,15 +16,11 @@ import (
 )
 
 // atomFeed is the subset of the YouTube PubSubHubbub Atom payload we care about.
-// YouTube sends: <feed xmlns:yt="http://www.youtube.com/xml/schemas/2015" ...>
-//
-//	<entry><yt:videoId>...</yt:videoId></entry>
-//
-// </feed>
 type atomFeed struct {
 	Entry struct {
-		VideoID string `xml:"http://www.youtube.com/xml/schemas/2015 videoId"`
-		Title   string `xml:"title"`
+		VideoID   string `xml:"http://www.youtube.com/xml/schemas/2015 videoId"`
+		ChannelID string `xml:"http://www.youtube.com/xml/schemas/2015 channelId"`
+		Title     string `xml:"title"`
 	} `xml:"entry"`
 }
 
@@ -42,20 +41,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "bad request", http.StatusBadRequest)
 			return
 		}
-		videoID := feed.Entry.VideoID
-		if videoID == "" {
-			log.Printf("webhook: empty videoId in feed")
-			http.Error(w, "missing videoId", http.StatusBadRequest)
+		channelID := feed.Entry.ChannelID
+		if channelID == "" {
+			log.Printf("webhook: empty channelId in feed")
+			w.WriteHeader(http.StatusNoContent)
 			return
 		}
-		log.Printf("webhook: received notification for video %s", videoID)
+		log.Printf("webhook: received notification for channel %s (video %s)", channelID, feed.Entry.VideoID)
 
-		// Process synchronously — the function timeout (set to 540s) gives us plenty
-		// of headroom. Returning an error causes YouTube to retry, which is desirable.
-		if err := runPipelineFn(r.Context(), videoID); err != nil {
-			log.Printf("webhook: pipeline error for %s: %v", videoID, err)
-			http.Error(w, "internal error", http.StatusInternalServerError)
-			return
+		if err := runPipelineFn(r.Context(), channelID); err != nil {
+			log.Printf("webhook: processing error for channel %s: %v", channelID, err)
 		}
 		w.WriteHeader(http.StatusNoContent)
 
@@ -64,28 +59,103 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-var runPipelineFn = runPipeline
+var (
+	runPipelineFn      = runPipeline
+	newFacadeFn        = func() db.Facade { return db.NewFacade() }
+	newDBClientFn      = db.NewClient
+	scanPlaylistFn     = transcript.ScanPlaylist
+	runVideoPipelineFn = pipeline.Run
+)
 
-func runPipeline(ctx context.Context, videoID string) error {
-	log.Printf("webhook: fetching metadata for video %s", videoID)
-	video, err := transcript.GetVideoByID(videoID)
-	if err != nil {
-		return fmt.Errorf("fetch video metadata %s: %w", videoID, err)
-	}
-	log.Printf("webhook: fetched metadata for video %s: %q", videoID, video.Title)
-
-	log.Printf("webhook: connecting to database")
-	facade := db.NewFacade()
-	client, err := db.NewClient()
+func runPipeline(ctx context.Context, channelID string) error {
+	facade := newFacadeFn()
+	client, err := newDBClientFn()
 	if err != nil {
 		return fmt.Errorf("connect to database: %w", err)
 	}
-	log.Printf("webhook: connected to database")
 	defer func() {
-		if err := client.Disconnect(ctx); err != nil {
-			log.Printf("webhook: disconnect: %v", err)
+		if client != nil {
+			if err := client.Disconnect(ctx); err != nil {
+				log.Printf("webhook: disconnect: %v", err)
+			}
 		}
 	}()
 
-	return pipeline.Run(ctx, facade, client, video)
+	playlists, err := facade.ListPlaylists(ctx, client, channelID)
+	if err != nil {
+		log.Printf("webhook: list playlists for channel %s: %v", channelID, err)
+		return nil
+	}
+	if len(playlists) == 0 {
+		log.Printf("webhook: no playlists found for channel %s", channelID)
+		return nil
+	}
+
+	pageSize := envInt64("PLAYLIST_PAGE_SIZE", 50)
+	threshold := envInt64("PLAYLIST_SCAN_THRESHOLD", 100)
+	maxFailures := envInt("MAX_PIPELINE_FAILURES", 3)
+
+	failCount := 0
+	circuitTripped := false
+
+	for _, pl := range playlists {
+		if circuitTripped {
+			break
+		}
+
+		startToken := ""
+		if pl.NumEntries >= threshold {
+			startToken = pl.PageToken
+		}
+
+		log.Printf("webhook: scanning playlist %s (%s) from token %q", pl.PlaylistId, pl.Title, startToken)
+		entries, err := scanPlaylistFn(pl.PlaylistId, startToken, pageSize)
+		if err != nil {
+			log.Printf("webhook: scan playlist %s: %v", pl.PlaylistId, err)
+			continue
+		}
+		log.Printf("webhook: playlist %s returned %d entries", pl.PlaylistId, len(entries))
+
+		for _, entry := range entries {
+			if _, err := facade.GetVideo(ctx, client, entry.Video.VideoId); err == nil {
+				continue // already processed
+			}
+
+			if err := runVideoPipelineFn(ctx, facade, client, entry.Video); err != nil {
+				log.Printf("webhook: pipeline error for video %s: %v", entry.Video.VideoId, err)
+				failCount++
+				if failCount >= maxFailures {
+					log.Printf("webhook: circuit breaker tripped after %d failures", failCount)
+					circuitTripped = true
+					break
+				}
+				continue
+			}
+
+			// Update playlist record with the page where this video was found.
+			if entry.Video.Position+1 > pl.NumEntries {
+				pl.NumEntries = entry.Video.Position + 1
+			}
+			pl.PageToken = entry.PageToken
+			pl.UpdatedAt = time.Now()
+			if err := facade.UpdatePlaylist(ctx, client, pl); err != nil {
+				log.Printf("webhook: update playlist %s: %v", pl.PlaylistId, err)
+			}
+		}
+	}
+
+	return nil // always swallow; YouTube should not retry
+}
+
+func envInt(key string, defaultVal int) int {
+	if v := os.Getenv(key); v != "" {
+		if n, err := strconv.Atoi(v); err == nil {
+			return n
+		}
+	}
+	return defaultVal
+}
+
+func envInt64(key string, defaultVal int64) int64 {
+	return int64(envInt(key, int(defaultVal)))
 }

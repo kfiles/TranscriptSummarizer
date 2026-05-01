@@ -67,6 +67,9 @@ func (m *mockFacade) InsertPlaylist(ctx context.Context, c *mongo.Client, p *tra
 func (m *mockFacade) UpdatePlaylist(ctx context.Context, c *mongo.Client, p *transcript.Playlist) error {
 	return nil
 }
+func (m *mockFacade) UpsertPlaylist(ctx context.Context, c *mongo.Client, p *transcript.Playlist) error {
+	return nil
+}
 func (m *mockFacade) DeletePlaylist(ctx context.Context, c *mongo.Client, id string) error { return nil }
 func (m *mockFacade) ListVideos(ctx context.Context, c *mongo.Client, playlistID string) ([]*transcript.Video, error) {
 	return nil, nil
@@ -187,12 +190,21 @@ func TestRun_EmptyTranscript(t *testing.T) {
 	}
 }
 
-// TestRun_InsertVideoError covers the case where inserting a new video fails.
+// TestRun_InsertVideoError covers the case where inserting a new video fails after the pipeline succeeds.
 func TestRun_InsertVideoError(t *testing.T) {
 	useTranscriber(t, &fakeTranscriber{text: "some text", lang: "en"})
+	useListNames(t, nil)
+
+	origDS := doSummarize
+	defer func() { doSummarize = origDS }()
+	doSummarize = func(_ context.Context, _ string, _ []string) (string, error) {
+		return "## Summary", nil
+	}
+
+	dir := t.TempDir()
+	t.Setenv("HUGO_CONTENT_DIR", dir)
 
 	facade := &mockFacade{
-		// GetVideo returns error → triggers InsertVideo
 		getVideoFn: func(_ context.Context, _ *mongo.Client, _ string) (*transcript.Video, error) {
 			return nil, errors.New("not found")
 		},

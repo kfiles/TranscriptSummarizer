@@ -1,6 +1,6 @@
 steps:
   # Build the officials binary and populate the MongoDB officials collection.
-  - name: 'golang:1.24'
+  - name: 'golang:1.25'
     id: populate-officials
     entrypoint: bash
     args:

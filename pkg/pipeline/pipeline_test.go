@@ -13,6 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
+
 // mockFacade implements db.Facade for tests. Only the methods exercised by
 // pipeline are wired up; all others are no-ops that satisfy the interface.
 type mockFacade struct {
@@ -331,5 +332,69 @@ func TestRun_TranscriberSelection(t *testing.T) {
 	}
 	if ft.calledWith == "" {
 		t.Error("expected fakeTranscriber to be called via newTranscriber seam")
+	}
+}
+
+// TestRun_TranscriptUnavailable_NewVideo verifies that when the transcriber signals
+// ErrTranscriptUnavailable for a video not yet in the DB, Run inserts the video with
+// Description "Transcript unavailable", skips summarization/Facebook, and returns nil.
+func TestRun_TranscriptUnavailable_NewVideo(t *testing.T) {
+	useTranscriber(t, &fakeTranscriber{err: transcript.ErrTranscriptUnavailable})
+
+	summarizeCalled := false
+	origDS := doSummarize
+	defer func() { doSummarize = origDS }()
+	doSummarize = func(_ context.Context, _ string, _ []string) (string, error) {
+		summarizeCalled = true
+		return "should not be called", nil
+	}
+
+	var insertedVideo *transcript.Video
+	facade := &mockFacade{
+		getVideoFn: func(_ context.Context, _ *mongo.Client, _ string) (*transcript.Video, error) {
+			return nil, errors.New("not found")
+		},
+		insertVideoFn: func(_ context.Context, _ *mongo.Client, v *transcript.Video) error {
+			insertedVideo = v
+			return nil
+		},
+	}
+
+	if err := Run(context.Background(), facade, nil, testVideo()); err != nil {
+		t.Fatalf("Run returned error, want nil: %v", err)
+	}
+	if summarizeCalled {
+		t.Error("doSummarize should not be called when transcript is unavailable")
+	}
+	if insertedVideo == nil {
+		t.Fatal("InsertVideo should have been called for new video")
+	}
+	if insertedVideo.Description != "Transcript unavailable" {
+		t.Errorf("Description = %q, want %q", insertedVideo.Description, "Transcript unavailable")
+	}
+}
+
+// TestRun_TranscriptUnavailable_ExistingVideo verifies that when the transcriber signals
+// ErrTranscriptUnavailable for a video already in the DB, Run does not call InsertVideo
+// and returns nil.
+func TestRun_TranscriptUnavailable_ExistingVideo(t *testing.T) {
+	useTranscriber(t, &fakeTranscriber{err: transcript.ErrTranscriptUnavailable})
+
+	insertCalled := false
+	facade := &mockFacade{
+		getVideoFn: func(_ context.Context, _ *mongo.Client, _ string) (*transcript.Video, error) {
+			return testVideo(), nil // already exists
+		},
+		insertVideoFn: func(_ context.Context, _ *mongo.Client, _ *transcript.Video) error {
+			insertCalled = true
+			return nil
+		},
+	}
+
+	if err := Run(context.Background(), facade, nil, testVideo()); err != nil {
+		t.Fatalf("Run returned error, want nil: %v", err)
+	}
+	if insertCalled {
+		t.Error("InsertVideo should not be called when video already exists")
 	}
 }

@@ -2,6 +2,7 @@ package transcript
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -139,13 +140,34 @@ func TestSupadata_MissingAPIKey(t *testing.T) {
 	}
 }
 
+func TestSupadata_404_ReturnsErrUnavailable(t *testing.T) {
+	var count int32
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		atomic.AddInt32(&count, 1)
+		w.WriteHeader(http.StatusNotFound)
+		w.Write([]byte(`{"error":"not found"}`)) //nolint:errcheck
+	}))
+	defer srv.Close()
+
+	s := newTestSupadata(t, srv.URL)
+	_, _, err := s.Transcribe(context.Background(), "vid123")
+	if err == nil {
+		t.Fatal("expected error for 404, got nil")
+	}
+	if !errors.Is(err, ErrTranscriptUnavailable) {
+		t.Errorf("error = %v, want errors.Is(err, ErrTranscriptUnavailable) == true", err)
+	}
+	if got := atomic.LoadInt32(&count); got != 1 {
+		t.Errorf("requests = %d, want 1 (no retry on 404)", got)
+	}
+}
+
 func TestSupadata_HTTPError(t *testing.T) {
 	tests := []struct {
 		name   string
 		status int
 	}{
 		{"500 server error", http.StatusInternalServerError},
-		{"404 not found", http.StatusNotFound},
 		{"403 forbidden", http.StatusForbidden},
 	}
 	for _, tt := range tests {

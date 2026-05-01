@@ -2,6 +2,7 @@ package pipeline
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -54,6 +55,16 @@ func Run(ctx context.Context, facade db.Facade, client *mongo.Client, v *transcr
 	log.Printf("pipeline: transcribing video %s", v.VideoId)
 	text, lang, err := newTranscriber().Transcribe(ctx, v.VideoId)
 	if err != nil {
+		if errors.Is(err, transcript.ErrTranscriptUnavailable) {
+			log.Printf("pipeline: transcript unavailable for video %s — recording and skipping Facebook post", v.VideoId)
+			if !videoExists {
+				v.Description = "Transcript unavailable"
+				if insErr := facade.InsertVideo(ctx, client, v); insErr != nil {
+					return fmt.Errorf("insert video %s: %w", v.VideoId, insErr)
+				}
+			}
+			return nil
+		}
 		return fmt.Errorf("transcribe %s: %w", v.VideoId, err)
 	}
 	if text == "" {

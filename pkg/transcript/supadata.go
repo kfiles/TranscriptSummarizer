@@ -98,6 +98,9 @@ func (s *SupadataTranscriber) Transcribe(ctx context.Context, videoID string) (s
 			return "", "", fmt.Errorf("supadata: 202 response missing jobId")
 		}
 		return s.pollJob(ctx, job.JobID)
+	case http.StatusNotFound:
+		return "", "", fmt.Errorf("supadata: %w", ErrTranscriptUnavailable)
+
 	default:
 		return "", "", fmt.Errorf("supadata: unexpected status %d: %s", resp.StatusCode, string(body))
 	}

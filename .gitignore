@@ -33,3 +33,16 @@ site/content/
 
 # Compiled binaries
 bin/
+
+# Claude Code local settings (may contain sensitive IDs)
+.claude/settings.local.json
+# Claude Code working memory (generated AI context, not for contributors)
+.claude/memory/
+
+# Terraform local variable overrides (may contain sensitive values)
+*.tfvars
+*.tfvars.json
+.venv/
+
+# Build output
+dist/

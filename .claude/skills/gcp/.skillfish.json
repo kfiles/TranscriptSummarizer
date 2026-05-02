@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "name": "gcp",
+  "owner": "lobbi-docs",
+  "repo": "claude",
+  "path": ".claude/skills/gcp",
+  "branch": "main",
+  "sha": "d0dc15426a456a0140eddecc07022d6bfb8df98b",
+  "source": "manual"
+}

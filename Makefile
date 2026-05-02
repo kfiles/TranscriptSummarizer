@@ -5,7 +5,7 @@ SA_EMAIL         := transcript-summarizer@$(PROJECT_ID).iam.gserviceaccount.com
 CONTENT_BUCKET   := $(PROJECT_ID)-hugo-content
 PUBSUB_TOPIC     := youtube-pipeline-trigger
 
-.PHONY: test test-verbose test-coverage test-integration build-officials officials deploy deploy-no-facebook
+.PHONY: test test-verbose test-coverage test-integration build-officials officials deploy deploy-no-facebook docs tf-apply
 
 test:
 	go test ./pkg/...
@@ -45,3 +45,16 @@ deploy:
 
 deploy-no-facebook: FACEBOOK_ENABLED=false
 deploy-no-facebook: deploy
+
+docs:
+	cd docs && uv sync && uv run mkdocs build --config-file ../mkdocs.yml
+
+# local.tfvars is gitignored and holds sensitive variable values (project_number).
+# The keychain is the source of truth; local.tfvars is regenerated from it if missing.
+tf-apply: infra/terraform/local.tfvars
+	cd infra/terraform && terraform apply -var-file=local.tfvars
+
+infra/terraform/local.tfvars:
+	printf 'project_number = "%s"\n' \
+		$$(security find-generic-password -a "project_number" -s "miltonmeetingsummarizer-terraform" -w) \
+		> infra/terraform/local.tfvars

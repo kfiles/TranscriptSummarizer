@@ -1,0 +1,39 @@
+site_name: Milton Meeting Summarizer — Architecture
+theme:
+  name: material
+  palette:
+    primary: indigo
+
+plugins:
+  - search
+  - mermaid2
+  - with-pdf:
+      cover_title: Milton Meeting Summarizer
+      cover_subtitle: Architecture Documentation
+      output_path: architecture.pdf
+
+markdown_extensions:
+  # plantuml_markdown intercepts ```plantuml fences during the preprocessor
+  # phase (priority 30) and sends them to the PlantUML server, embedding the
+  # result as inline SVG. This runs before pymdownx.superfences (priority 25)
+  # so superfences never sees the plantuml blocks.
+  - plantuml_markdown:
+      server: https://www.plantuml.com/plantuml
+      format: svg_inline
+  # superfences handles ```mermaid only; plantuml entry removed.
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+nav:
+#  - Overview: architecture/OVERVIEW.md
+#  - Context (C1): architecture/c1-context.md
+#  - Containers (C2): architecture/c2-containers.md
+#  - Components (C3): architecture/c3-components.md
+  - Code Flows (C4): architecture/c4-code.md
+  - Cloud Resources: architecture/cloud-resources.md
+
+docs_dir: docs
+site_dir: dist/docs/site
